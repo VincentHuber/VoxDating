@@ -1,7 +1,6 @@
 import {
   TouchableOpacity,
   Image,
-  StyleSheet,
   Text,
   View,
   SafeAreaView,
@@ -290,4 +289,3 @@ export default function WishedGenderScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create();

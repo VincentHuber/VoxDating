@@ -20,7 +20,6 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { BlurView } from "expo-blur";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-
 import {
   useFonts,
   Lexend_900Black,
@@ -36,6 +35,7 @@ import {
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
 
 //Glassmorphisme
 const MenuBlur = () => {
@@ -230,6 +230,8 @@ const TabNavigator = () => {
 };
 
 export default function App() {
+
+
   //Chargement de la police
   const [fontsLoaded] = useFonts({
     Lexend_900Black,
@@ -249,7 +251,7 @@ export default function App() {
   }
 
   return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
