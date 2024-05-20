@@ -1,5 +1,5 @@
-import { Text, View, SafeAreaView } from "react-native";
-import React, { Fragment } from "react";
+import { Text, View, Dimensions, Animated } from "react-native";
+import React, { Fragment, useCallback } from "react";
 import Choice from "./Choice";
 
 import {
@@ -15,33 +15,62 @@ import {
   Lexend_100Thin,
 } from "@expo-google-fonts/lexend";
 
-const Candidate = ({ username, audioProfile, isFirst }) => {
-  const renderChoice = () => {
+const Candidate = ({ username, audioProfile, isFirst, swipe, titlSign, ...rest }) => {
+  
+  // Définition de l'animation de rotation basée sur la position du doigt
+  const rotate = Animated.multiply(swipe.x, titlSign).interpolate({
+    inputRange: [-100,0,100],
+    outputRange : ['8deg', '0deg', '-8deg']
+  })
+  
+  // Style animé pour le candidat, incluant la transformation de rotation et de translation
+  const animatedCandidateStyle = {
+    transform : [...swipe.getTranslateTransform(), {rotate}]
+  }
+
+  // Opacité pour l'affichage du choix "like"
+  const likeOpacity = swipe.x.interpolate({
+    inputRange:[25, 100],
+    outputRange:[0,1],
+    extrapolate: 'clamp'
+  })
+
+  // Opacité pour l'affichage du choix "nope" 
+  const nopeOpacity = swipe.x.interpolate({
+    inputRange:[-100, -25],
+    outputRange:[1,0],
+    extrapolate: 'clamp'
+  })
+
+  //Mémoriser la fonction renderChoice
+  const renderChoice = useCallback(() => {
     return (
       <Fragment>
-        <View
+        <Animated.View
           style={{
             position: "absolute",
             top: 100,
             left: 45,
             transform: [{ rotate: "-30deg" }],
+            opacity:likeOpacity
           }}
         >
           <Choice type="like" />
-        </View>
-        <View
+        </Animated.View>
+        <Animated.View
           style={{
             position: "absolute",
             top: 100,
             right: 45,
             transform: [{ rotate: "30deg" }],
+            opacity:nopeOpacity
           }}
         >
           <Choice type="nope" />
-        </View>
+        </Animated.View>
       </Fragment>
     );
-  };
+  },[likeOpacity, nopeOpacity]);
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({
@@ -62,7 +91,7 @@ const Candidate = ({ username, audioProfile, isFirst }) => {
   }
 
   return (
-    <SafeAreaView
+    <Animated.View
       style={{
         position: "absolute",
         backgroundColor: "black",
@@ -70,9 +99,11 @@ const Candidate = ({ username, audioProfile, isFirst }) => {
         height: "100%",
         borderRadius: 15,
         alignItems: "center",
+       
+        ...(isFirst ? animatedCandidateStyle : {})        
         // borderColor:"red",
         // borderWidth:1
-      }}
+      }} {...rest}
     >
       <Text
         style={{
@@ -99,7 +130,7 @@ const Candidate = ({ username, audioProfile, isFirst }) => {
         {audioProfile}
       </Text>
       {isFirst && renderChoice()}
-    </SafeAreaView>
+    </Animated.View>
   );
 };
 

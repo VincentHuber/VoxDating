@@ -33,6 +33,7 @@ import {
   Lexend_100Thin,
 } from "@expo-google-fonts/lexend";
 
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 

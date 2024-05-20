@@ -1,13 +1,12 @@
+//tuto pour le swipe : www.youtube.com/watch?v=-3-mkvtEuf0
+
 import {
   SafeAreaView,
-  Text,
-  View,
-  Button,
   PanResponder,
   Dimensions,
   Animated,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { db } from "../../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import Candidate from "../../components/Candidate";
@@ -27,23 +26,17 @@ import {
 } from "@expo-google-fonts/lexend";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-////////////////////
-const { width, height } = Dimensions.get("screen");
-////////////////////
+const { height } = Dimensions.get("screen");
 
 const FeedScreen = () => {
-  //Valeur de l'id
   const [id, setId] = useState(null);
-
   const [userFiltered, setUserFiltered] = useState([]);
-
-  ////////////////////
+  // const usersData = [];
   const swipe = useRef(new Animated.ValueXY()).current;
   const titlSign = useRef(new Animated.Value(1)).current;
 
   const panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: () => true,
-
     onPanResponderMove: (_, { dx, dy, y0 }) => {
       swipe.setValue({ x: dx, y: dy });
       titlSign.setValue(y0 > (height * 0.9) / 2 ? 1 : -1);
@@ -51,31 +44,36 @@ const FeedScreen = () => {
     onPanResponderRelease: (_, { dx, dy }) => {
       const direction = Math.sign(dx);
       const isActionActive = Math.abs(dx) > 100;
-
       if (isActionActive) {
         Animated.timing(swipe, {
-          duration: 100,
-          toValue: {
-            x: direction * 500,
-            y: dy,
-          },
+          duration: 500,
+          toValue: { x: direction * 500, y: dy },
           useNativeDriver: true,
-        }).start();
+        }).start(removeTopCandidate);
       } else {
         Animated.spring(swipe, {
-          toValue: {
-            x: 0,
-            y: 0,
-          },
+          toValue: { x: 0, y: 0 },
           useNativeDriver: true,
           friction: 5,
         }).start();
       }
     },
   });
-  ////////////////////
 
-  //Récupère l'id dans l'AsyncStorage
+  const removeTopCandidate = useCallback(() => {
+    setUserFiltered((prevstate) => prevstate.slice(1));
+    swipe.setValue({ x: 0, y: 0 });
+  }, [swipe]);
+
+  const handleChoice = useCallback((direction) => {
+    Animated.timing(swipe.x, {
+      toValue: direction * 500,
+      duration: 500,
+      useNativeDriver: true,
+    }).start(removeTopCandidate);
+  }, [removeTopCandidate, swipe.x]);
+
+
   useEffect(() => {
     const fetchToken = async () => {
       try {
@@ -85,22 +83,17 @@ const FeedScreen = () => {
           setId(userData.uid);
         }
       } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des données utilisateur :",
-          error
-        );
+        console.error("Erreur lors de la récupération des données utilisateur :", error);
       }
     };
     fetchToken();
   }, []);
 
-  //Récupère toutes les données des users
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const allUsers = await getDocs(collection(db, "users"));
         const usersData = [];
-
         allUsers.forEach((user) => {
           const userObj = {
             username: user.data().username,
@@ -114,12 +107,51 @@ const FeedScreen = () => {
         console.log("error fetching users : ", error);
       }
     };
-
     fetchUsers();
   }, []);
-  ///////////
 
-  //Chargement de la police
+
+  useEffect(() => {
+    const updateUserFiltered = () => {
+      if (!userFiltered.length) { // Si userFiltered est vide
+        const fetchUsersData = async () => { // Définition de fetchUsersData
+          try {
+            const allUsers = await getDocs(collection(db, "users"));
+            const usersData = [];
+            allUsers.forEach((user) => {
+              const userObj = {
+                username: user.data().username,
+                gender: user.data().gender,
+                audioProfile: user.data().audioProfile,
+              };
+              usersData.push(userObj);
+            });
+            setUserFiltered(usersData); // Mise à jour de userFiltered avec les données récupérées
+          } catch (error) {
+            console.log("error fetching users : ", error);
+          }
+        };
+        fetchUsersData(); // Appel de fetchUsersData si userFiltered est vide
+      }
+    };
+  
+    updateUserFiltered();
+  
+    const intervalId = setInterval(updateUserFiltered, 1000);
+  
+    return () => clearInterval(intervalId);
+  }, [userFiltered]);
+
+
+
+
+
+// useEffect(()=>{
+//   if(!userFiltered.length){
+//     setUserFiltered(usersData)
+//   }
+// },[userFiltered.length])
+
   const [fontsLoaded] = useFonts({
     Lexend_900Black,
     Lexend_800ExtraBold,
@@ -132,7 +164,6 @@ const FeedScreen = () => {
     Lexend_100Thin,
   });
 
-  //Attente de le chargement de la police
   if (!fontsLoaded) {
     return null;
   }
@@ -147,7 +178,7 @@ const FeedScreen = () => {
     >
       {userFiltered
         .map(({ username, audioProfile }, index) => {
-          const isFirst = index == 0;
+          const isFirst = index === 0;
           const dragHandlers = isFirst ? panResponder.panHandlers : {};
           return (
             <Candidate
@@ -162,7 +193,7 @@ const FeedScreen = () => {
           );
         })
         .reverse()}
-      <Footer />
+      <Footer handleChoice={handleChoice} />
     </SafeAreaView>
   );
 };
