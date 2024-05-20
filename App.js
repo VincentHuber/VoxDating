@@ -18,6 +18,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { BlurView } from "expo-blur";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
 
 import {
   useFonts,
@@ -247,6 +249,7 @@ export default function App() {
   }
 
   return (
+        <GestureHandlerRootView style={{ flex: 1 }}>
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
@@ -291,6 +294,7 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
 
