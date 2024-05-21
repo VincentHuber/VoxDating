@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from "react-native";
+import { View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -33,10 +33,8 @@ import {
   Lexend_100Thin,
 } from "@expo-google-fonts/lexend";
 
-
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
 
 //Glassmorphisme
 const MenuBlur = () => {
@@ -231,8 +229,7 @@ const TabNavigator = () => {
 };
 
 export default function App() {
-
-
+  
   //Chargement de la police
   const [fontsLoaded] = useFonts({
     Lexend_900Black,
@@ -253,52 +250,51 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Login"
-          component={LoginScreen}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Username"
-          component={UsernameScreen}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Age"
-          component={AgeScreen}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Gender"
-          component={GenderScreen}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="WishedGender"
-          component={WishedGenderScreen}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="City"
-          component={CityScreen}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Audio"
-          component={AudioScreen}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="TabNavigator"
-          component={TabNavigator}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Login"
+            component={LoginScreen}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Username"
+            component={UsernameScreen}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Age"
+            component={AgeScreen}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Gender"
+            component={GenderScreen}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="WishedGender"
+            component={WishedGenderScreen}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="City"
+            component={CityScreen}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Audio"
+            component={AudioScreen}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="TabNavigator"
+            component={TabNavigator}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     </GestureHandlerRootView>
   );
 }
 
-const styles = StyleSheet.create();

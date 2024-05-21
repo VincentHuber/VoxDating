@@ -1,5 +1,5 @@
-import { Text, View, Dimensions, Animated } from "react-native";
-import React, { Fragment, useCallback } from "react";
+import { Text, Animated, View } from "react-native";
+import React, { useCallback } from "react";
 import Choice from "./Choice";
 
 import {
@@ -15,44 +15,57 @@ import {
   Lexend_100Thin,
 } from "@expo-google-fonts/lexend";
 
-const Candidate = ({ username, audioProfile, isFirst, swipe, titlSign, ...rest }) => {
-  
-  // Définition de l'animation de rotation basée sur la position du doigt
+const Candidate = ({
+  username,
+  audioProfile,
+  isFirst,
+  swipe,
+  titlSign,
+  ...rest
+}) => {
+
+  // Définition de l'animation de rotation 
   const rotate = Animated.multiply(swipe.x, titlSign).interpolate({
-    inputRange: [-100,0,100],
-    outputRange : ['8deg', '0deg', '-8deg']
-  })
-  
-  // Style animé pour le candidat, incluant la transformation de rotation et de translation
+    inputRange: [-100, 0, 100],
+    outputRange: ["8deg", "0deg", "-8deg"],
+  });
+
+  // La carte suit le mouvement du doigt
   const animatedCandidateStyle = {
-    transform : [...swipe.getTranslateTransform(), {rotate}]
-  }
+    transform: [...swipe.getTranslateTransform(), { rotate }],
+  };
 
-  // Opacité pour l'affichage du choix "like"
+  // Opacité en fonction de la position du doigt pour "like"
   const likeOpacity = swipe.x.interpolate({
-    inputRange:[25, 100],
-    outputRange:[0,1],
-    extrapolate: 'clamp'
-  })
+    inputRange: [25, 100],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
 
-  // Opacité pour l'affichage du choix "nope" 
+  // Opacité en fonction de la position du doigt pour "nope"
   const nopeOpacity = swipe.x.interpolate({
-    inputRange:[-100, -25],
-    outputRange:[1,0],
-    extrapolate: 'clamp'
-  })
+    inputRange: [-100, -25],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
 
-  //Mémoriser la fonction renderChoice
+  // Fonction pour le rendu animé des choix "like" et "nope"
   const renderChoice = useCallback(() => {
     return (
-      <Fragment>
+      <View style={{
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        justifyContent: "center",
+        alignItems: "center",
+      }}>
         <Animated.View
           style={{
             position: "absolute",
-            top: 100,
-            left: 45,
-            transform: [{ rotate: "-30deg" }],
-            opacity:likeOpacity
+            // transform: [{ rotate: "-30deg" }],
+            opacity: likeOpacity,
           }}
         >
           <Choice type="like" />
@@ -60,17 +73,15 @@ const Candidate = ({ username, audioProfile, isFirst, swipe, titlSign, ...rest }
         <Animated.View
           style={{
             position: "absolute",
-            top: 100,
-            right: 45,
-            transform: [{ rotate: "30deg" }],
-            opacity:nopeOpacity
+            // transform: [{ rotate: "30deg" }],
+            opacity: nopeOpacity,
           }}
         >
           <Choice type="nope" />
         </Animated.View>
-      </Fragment>
+      </View>
     );
-  },[likeOpacity, nopeOpacity]);
+  }, [likeOpacity, nopeOpacity]);
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({
@@ -99,11 +110,9 @@ const Candidate = ({ username, audioProfile, isFirst, swipe, titlSign, ...rest }
         height: "100%",
         borderRadius: 15,
         alignItems: "center",
-       
-        ...(isFirst ? animatedCandidateStyle : {})        
-        // borderColor:"red",
-        // borderWidth:1
-      }} {...rest}
+        ...(isFirst ? animatedCandidateStyle : {}),
+      }}
+      {...rest}
     >
       <Text
         style={{
@@ -118,6 +127,7 @@ const Candidate = ({ username, audioProfile, isFirst, swipe, titlSign, ...rest }
       >
         {username}
       </Text>
+
       <Text
         style={{
           color: "white",
@@ -129,7 +139,9 @@ const Candidate = ({ username, audioProfile, isFirst, swipe, titlSign, ...rest }
       >
         {audioProfile}
       </Text>
+
       {isFirst && renderChoice()}
+
     </Animated.View>
   );
 };

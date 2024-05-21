@@ -1,16 +1,17 @@
-import { View, Text, TouchableWithoutFeedback, Animated } from "react-native";
+import { TouchableWithoutFeedback, Animated } from "react-native";
 import React, { useCallback, useRef } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 
-const Button = ({ name, size, color, style, onPress }) => {
-  
-    const scale = useRef(new Animated.Value(1)).current;
-  
-  const animateScale = useCallback(
+const Button = ({ name, size, style, onPress }) => {
+
+  // Crée une référence mutable pour une valeur animée initialisée à 1
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const animateScale = useCallback( 
     (newValue) => {
-      Animated.spring(scale, {
-        toValue: newValue,
-        triction: 10,
+      Animated.spring(scale, {  // Utilise Animated.spring pour animer la valeur scale
+        toValue: newValue, 
+        friction: 10,
         useNativeDriver: true,
       }).start();
     },
@@ -19,10 +20,12 @@ const Button = ({ name, size, color, style, onPress }) => {
 
   return (
     <TouchableWithoutFeedback
-      onPressIn={() => animateScale(0.8)}
+      // Réduit la taille du bouton quand on presse
+      onPressIn={() => animateScale(0.8)} 
       onPressOut={() => {
-        animateScale(1),
-        onPress()
+        // Restaure la taille du bouton
+        animateScale(1), 
+        onPress();
       }}
       delayPressIn={0}
       delayPressOut={20}
@@ -31,18 +34,18 @@ const Button = ({ name, size, color, style, onPress }) => {
         style={{
           height: 60,
           width: 60,
+          gap:10,
           backgroundColor: "white",
-          elevation: 5,
           borderRadius: 40,
           justifyContent: "center",
           alignItems: "center",
-          borderColor: color,
-          borderWidth: 1,
+          // Applique la transformation d'échelle animée
           transform: [{ scale }],
+          // Étend tout autre style passé via la prop style
           ...style,
         }}
       >
-        <FontAwesome name={name} size={size} color={color} />
+        <FontAwesome name={name} size={size} color="black" />
       </Animated.View>
     </TouchableWithoutFeedback>
   );
