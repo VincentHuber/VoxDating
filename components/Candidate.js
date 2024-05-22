@@ -1,8 +1,6 @@
 import { Text, Animated, View } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import Choice from "./Choice";
-// import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-// import { faHeart, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Audio } from "expo-av";
 
 import {
@@ -26,54 +24,49 @@ const Candidate = ({
   titlSign,
   ...rest
 }) => {
-
-  
-  const [sound, setSound] = useState(null)
+  const soundRef = useRef(null);
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
-
 
   const loadAudio = async () => {
     try {
       const { sound } = await Audio.Sound.createAsync({ uri: audioProfile });
       console.log("Sound loaded successfully:", sound);
-      setSound(sound);
+      soundRef.current = sound;
       setIsSoundLoaded(true);
-      await sound.playAsync({ isLooping: true }); // Lancement de la lecture en boucle
+      await sound.playAsync({ isLooping: true });
     } catch (error) {
       console.error("Error loading audio:", error);
     }
   };
-  
+
   useEffect(() => {
     console.log("Executing useEffect to load audio");
     loadAudio();
-  
+
     return () => {
-      if (sound) {
+      if (soundRef.current) {
         console.log("Stopping and unloading sound...");
-        sound.stopAsync(); // Arrête la lecture du son lorsque le composant est démonté
-        sound.unloadAsync(); // Décharge le son pour nettoyer les ressources
+        soundRef.current.stopAsync(); // Arrête la lecture du son lorsque le composant est démonté
+        soundRef.current.unloadAsync(); // Décharge le son pour nettoyer les ressources
       }
     };
   }, [audioProfile]);
 
-
-  useEffect(()=>{
-    if(sound && isSoundLoaded){
-      const playRecording = async () => {
+  useEffect(() => {
+    if (soundRef.current && isSoundLoaded) {
+      const replaySound = async () => {
         try {
           console.log("Replaying sound...");
-          await sound.playAsync({ isLooping: true });
+          await soundRef.current.replayAsync({ isLooping: true });
         } catch (error) {
           console.error("Error replaying sound:", error);
         }
       };
-      playRecording();
+      replaySound();
     }
-  }, [sound, isSoundLoaded]);
+  }, [isSoundLoaded]);
 
-
-  // Définition de l'animation de rotation 
+  // Définition de l'animation de rotation
   const rotate = Animated.multiply(swipe.x, titlSign).interpolate({
     inputRange: [-100, 0, 100],
     outputRange: ["8deg", "0deg", "-8deg"],
@@ -101,38 +94,38 @@ const Candidate = ({
   // Fonction pour le rendu animé des choix "like" et "nope"
   const renderChoice = useCallback(() => {
     return (
-      <View style={{
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        justifyContent: "center",
-        alignItems: "center",
-      }}>
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Animated.View
           style={{
             position: "absolute",
-            // transform: [{ rotate: "-30deg" }],
             opacity: likeOpacity,
           }}
         >
-          <Choice name = "heart" type="like" />
+          <Choice name="heart" type="like" />
         </Animated.View>
         <Animated.View
           style={{
             position: "absolute",
-            // transform: [{ rotate: "30deg" }],
             opacity: nopeOpacity,
           }}
         >
-          <Choice name = "times" type="nope" />
+          <Choice name="times" type="nope" />
         </Animated.View>
       </View>
     );
   }, [likeOpacity, nopeOpacity]);
 
-  //Chargement de la police
+  // Chargement de la police
   const [fontsLoaded] = useFonts({
     Lexend_900Black,
     Lexend_800ExtraBold,
@@ -145,7 +138,7 @@ const Candidate = ({
     Lexend_100Thin,
   });
 
-  //Attente de le chargement de la police
+  // Attente de le chargement de la police
   if (!fontsLoaded) {
     return null;
   }
@@ -190,7 +183,6 @@ const Candidate = ({
       </Text>
 
       {isFirst && renderChoice()}
-
     </Animated.View>
   );
 };
