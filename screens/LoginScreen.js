@@ -1,7 +1,6 @@
 import {
   Alert,
   KeyboardAvoidingView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -27,7 +26,7 @@ import {
   Lexend_100Thin,
 } from "@expo-google-fonts/lexend";
 import BottomSheet from "@gorhom/bottom-sheet";
-import React, { useEffect, useRef, useCallback, useState } from "react";
+import React, { useRef, useCallback, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setDoc, doc } from "firebase/firestore";
@@ -114,18 +113,14 @@ const LoginScreen = () => {
   };
 
   //Fonction pour se connecter
-  const handleLogin = () => {
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        navigation.navigate("TabNavigator")
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error("Error during signin:", errorCode, errorMessage);
-      });
+  const handleLogin = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      navigation.navigate("TabNavigator");
+    } catch (error) {
+      Alert.alert("Erreur lors de la connexion", error.message);
+    }
   };
 
   //Chargement de la police
@@ -361,4 +356,3 @@ const LoginScreen = () => {
 
 export default LoginScreen;
 
-const styles = StyleSheet.create({});

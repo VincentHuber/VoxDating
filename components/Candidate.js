@@ -29,12 +29,15 @@ const Candidate = ({
 
   
   const [sound, setSound] = useState(null)
+  const [isSoundLoaded, setIsSoundLoaded] = useState(false);
+
 
   const loadAudio = async () => {
     try {
       const { sound } = await Audio.Sound.createAsync({ uri: audioProfile });
       console.log("Sound loaded successfully:", sound);
       setSound(sound);
+      setIsSoundLoaded(true);
       await sound.playAsync({ isLooping: true }); // Lancement de la lecture en boucle
     } catch (error) {
       console.error("Error loading audio:", error);
@@ -42,6 +45,7 @@ const Candidate = ({
   };
   
   useEffect(() => {
+    console.log("Executing useEffect to load audio");
     loadAudio();
   
     return () => {
@@ -51,18 +55,22 @@ const Candidate = ({
         sound.unloadAsync(); // Décharge le son pour nettoyer les ressources
       }
     };
-  }, []);
+  }, [audioProfile]);
 
 
   useEffect(()=>{
-    if(sound){
-      const playRecording = async ()=>{
-        await sound.replayAsync()
-      }
-      playRecording()
+    if(sound && isSoundLoaded){
+      const playRecording = async () => {
+        try {
+          console.log("Replaying sound...");
+          await sound.playAsync({ isLooping: true });
+        } catch (error) {
+          console.error("Error replaying sound:", error);
+        }
+      };
+      playRecording();
     }
-  },[sound])
-
+  }, [sound, isSoundLoaded]);
 
 
   // Définition de l'animation de rotation 

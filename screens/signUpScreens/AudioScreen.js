@@ -3,7 +3,6 @@
 
 import {
   TouchableOpacity,
-  StyleSheet,
   Text,
   View,
   SafeAreaView,
@@ -15,10 +14,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import {
-  updateDoc,
-  doc,
-} from "firebase/firestore";
+import { updateDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { storage } from "../../firebase";
 
@@ -132,7 +128,6 @@ export default function AudioScreen({ navigation }) {
         setIsPlaying(false);
       }
     });
-    console.log("sound => ", sound)
     await sound.replayAsync();
   }
 
@@ -360,4 +355,3 @@ export default function AudioScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create();
