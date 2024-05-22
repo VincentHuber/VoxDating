@@ -1,5 +1,10 @@
 import { View, Text } from "react-native";
 import React from "react";
+import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faHeart, faTimes } from '@fortawesome/free-solid-svg-icons';
+
+
 
 import {
   useFonts,
@@ -19,7 +24,7 @@ const COLORS = {
   nope: "#ff006f",
 };
 
-const Choice = ({ type }) => {
+const Choice = ({ name, type }) => {
 
     const color = COLORS[type]
 
@@ -43,18 +48,9 @@ const Choice = ({ type }) => {
 
 
   return (
-    <View>
-      <Text
-        style={{
-          fontSize:48,
-          fontFamily:"Lexend_600SemiBold",
-          textTransform: "uppercase",
-          letterSpacing:4,
-          color: color
-        }}
-      >
-        {type}
-      </Text>
+    <View style={{justifyContent:"center", alignItems:"center"}}>
+      <FontAwesome name= {name} size={40} color={color} />
+      {/* <FontAwesomeIcon icon= {name} size={55} color={color}/> */}
     </View>
   );
 };

@@ -1,6 +1,9 @@
 import { Text, Animated, View } from "react-native";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Choice from "./Choice";
+// import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+// import { faHeart, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Audio } from "expo-av";
 
 import {
   useFonts,
@@ -23,6 +26,44 @@ const Candidate = ({
   titlSign,
   ...rest
 }) => {
+
+  
+  const [sound, setSound] = useState(null)
+
+  const loadAudio = async () => {
+    try {
+      const { sound } = await Audio.Sound.createAsync({ uri: audioProfile });
+      console.log("Sound loaded successfully:", sound);
+      setSound(sound);
+      await sound.playAsync({ isLooping: true }); // Lancement de la lecture en boucle
+    } catch (error) {
+      console.error("Error loading audio:", error);
+    }
+  };
+  
+  useEffect(() => {
+    loadAudio();
+  
+    return () => {
+      if (sound) {
+        console.log("Stopping and unloading sound...");
+        sound.stopAsync(); // Arrête la lecture du son lorsque le composant est démonté
+        sound.unloadAsync(); // Décharge le son pour nettoyer les ressources
+      }
+    };
+  }, []);
+
+
+  useEffect(()=>{
+    if(sound){
+      const playRecording = async ()=>{
+        await sound.replayAsync()
+      }
+      playRecording()
+    }
+  },[sound])
+
+
 
   // Définition de l'animation de rotation 
   const rotate = Animated.multiply(swipe.x, titlSign).interpolate({
@@ -68,7 +109,7 @@ const Candidate = ({
             opacity: likeOpacity,
           }}
         >
-          <Choice type="like" />
+          <Choice name = "heart" type="like" />
         </Animated.View>
         <Animated.View
           style={{
@@ -77,7 +118,7 @@ const Candidate = ({
             opacity: nopeOpacity,
           }}
         >
-          <Choice type="nope" />
+          <Choice name = "times" type="nope" />
         </Animated.View>
       </View>
     );

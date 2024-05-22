@@ -36,7 +36,7 @@ import {
   Lexend_200ExtraLight,
   Lexend_100Thin,
 } from "@expo-google-fonts/lexend";
-import firebase from "firebase/compat/app";
+
 
 export default function AudioScreen({ navigation }) {
 
@@ -125,7 +125,6 @@ export default function AudioScreen({ navigation }) {
 
   //Fonction pour jouer l'audio
   async function playRecording() {
-    console.log("recording2 : ", recordingDone.file);
     setIsPlaying(true);
     const { sound } = recordingDone;
     sound.setOnPlaybackStatusUpdate((status) => {
@@ -133,6 +132,7 @@ export default function AudioScreen({ navigation }) {
         setIsPlaying(false);
       }
     });
+    console.log("sound => ", sound)
     await sound.replayAsync();
   }
 
