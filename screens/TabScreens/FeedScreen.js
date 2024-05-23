@@ -39,6 +39,9 @@ const FeedScreen = () => {
   //Valeur pour déterminer la direction du swipe
   const titlSign = useRef(new Animated.Value(1)).current;
 
+  // Ajoutez un état pour suivre l'index du candidat affiché
+  const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
+
 
   // Configuration du PanResponder pour gérer les gestes de glissement
   const panResponder = PanResponder.create({  
@@ -71,11 +74,11 @@ const FeedScreen = () => {
   });
 
 
-  // Fonction pour supprimer le candidat en haut de la pile
-  const removeTopCandidate = useCallback(() => {
-    setUserFiltered((prevstate) => prevstate.slice(1));
-    swipe.setValue({ x: 0, y: 0 });  // Réinitialise la position de l'animation
-  }, [swipe]);
+// Fonction pour supprimer le candidat en haut de la pile et passer au suivant
+const removeTopCandidate = useCallback(() => {
+  setCurrentCandidateIndex((prevIndex) => prevIndex + 1);
+  swipe.setValue({ x: 0, y: 0 }); // Réinitialise la position de l'animation
+}, [swipe]);
 
 
   // Fonction pour gérer les choix de l'utilisateur
@@ -160,23 +163,18 @@ const FeedScreen = () => {
         alignItems: "center",
       }}
     >
-      {userFiltered
-        .map(({ username, audioProfile }, index) => {
-          const isFirst = index === 0;
-          const dragHandlers = isFirst ? panResponder.panHandlers : {};
-          return (
-            <Candidate
-              key={index}
-              username={username}
-              audioProfile={audioProfile}
-              isFirst={isFirst}
-              swipe={swipe}
-              titlSign={titlSign}
-              {...dragHandlers}
-            />
-          );
-        })
-        .reverse()}
+      {userFiltered.length > 0 && (
+      <Candidate
+        key={currentCandidateIndex}
+        username={userFiltered[currentCandidateIndex].username}
+        audioProfile={userFiltered[currentCandidateIndex].audioProfile}
+        isFirst={true}
+        swipe={swipe}
+        titlSign={titlSign}
+        {...panResponder.panHandlers}
+      />
+    )}
+
       <Footer handleChoice={handleChoice} />
     </SafeAreaView>
   );
