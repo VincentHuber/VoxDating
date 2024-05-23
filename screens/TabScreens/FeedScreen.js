@@ -40,6 +40,9 @@ const FeedScreen = () => {
   // Valeur pour animer l'opacité
   const fade = useRef(new Animated.Value(0)).current;
 
+  // Valeur pour animer l'échelle
+  const scale = useRef(new Animated.Value(0.8)).current;
+
   // Ajoutez un état pour suivre l'index du candidat affiché
   const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
 
@@ -75,8 +78,9 @@ const FeedScreen = () => {
   });
 
 
-  // Fonction pour effectuer l'animation fadeIn
+  // Fonction pour effectuer l'animation d'opacité et d'échelle
   useEffect(() => {
+
     const fadeIn = () => {
       fade.setValue(0);
       Animated.timing(fade, {
@@ -85,18 +89,25 @@ const FeedScreen = () => {
         useNativeDriver: true,
       }).start();
     };
+
+    const scaleIn = ()=>{
+      scale.setValue(0.97);
+      Animated.spring(scale, {
+        toValue:1,
+        duration : 200,
+        useNativeDriver : true,
+      }).start()
+    }
+    scaleIn()
     fadeIn();
   }, [currentCandidateIndex]);
 
 
   // Fonction pour supprimer le candidat en haut de la pile et passer au suivant
   const removeTopCandidate = useCallback(() => {
-    setCurrentCandidateIndex((prevIndex) => {
-      // Réinitialiser l'index à 0 si on atteint la fin de la liste
-      return prevIndex + 1 >= userFiltered.length ? 0 : prevIndex + 1;
-    });
+    setCurrentCandidateIndex((prevIndex) => prevIndex + 1);
     swipe.setValue({ x: 0, y: 0 }); // Réinitialise la position de l'animation
-  }, [swipe, userFiltered.length]);
+  }, [swipe]);
 
 
   // Fonction pour gérer les choix de l'utilisateur
@@ -135,7 +146,7 @@ const FeedScreen = () => {
     fetchUsers();
   }, [!userFiltered.length]);
 
-
+  
   //Récupère l'id de l'user
   useEffect(() => {
     const fetchToken = async () => {
@@ -187,6 +198,7 @@ const FeedScreen = () => {
           height: "100%",
           width: "100%",
           opacity: fade,
+          transform: [{ scale }]
         }}
       >
         {userFiltered.length > 0 && (
