@@ -1,4 +1,4 @@
-import { Text, Animated, View } from "react-native";
+import { Text, Animated, View, TouchableWithoutFeedback } from "react-native";
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import Choice from "./Choice";
 import { Audio } from "expo-av";
@@ -26,6 +26,7 @@ const Candidate = ({
 }) => {
   const soundRef = useRef(null);
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
+  const [play, setPlay] = useState(false);
 
   // Fonction pour charger et lire l'audio
   const loadAudio = async () => {
@@ -68,6 +69,16 @@ const Candidate = ({
       replaySound();
     }
   }, [isSoundLoaded]);
+
+  // Fonction pour mettre en pause ou lire l'audio au clic
+  async function pauseRecording() {
+    setPlay(!play);
+    if (!play) {
+      await soundRef.current.pauseAsync();
+    } else {
+      await soundRef.current.replayAsync({ isLooping: true });
+    }
+  }
 
   // Définition de l'animation de rotation
   const rotate = Animated.multiply(swipe.x, titlSign).interpolate({
@@ -148,45 +159,51 @@ const Candidate = ({
 
   return (
     <Animated.View
-      style={{
-        position: "absolute",
-        backgroundColor: "black",
-        width: "100%",
-        height: "100%",
-        borderRadius: 15,
-        alignItems: "center",
-        ...(isFirst ? animatedCandidateStyle : {}),
-      }}
-      {...rest}
-    >
-      <Text
         style={{
-          marginTop: 50,
-          fontFamily: "Lexend_200ExtraLight",
-          letterSpacing: 2,
-          color: "white",
-          fontSize: 40,
-          textAlign: "center",
-          textTransform: "uppercase",
+          position: "absolute",
+          backgroundColor: "black",
+          width: "100%",
+          height: "100%",
+          borderRadius: 15,
+          alignItems: "center",
+          ...(isFirst ? animatedCandidateStyle : {}),
         }}
+        {...rest}
       >
-        {username}
-      </Text>
+    <TouchableWithoutFeedback onPress={pauseRecording}>
+    <View style={{alignItems:"center"}}>
 
-      <Text
-        style={{
-          color: "white",
-          marginTop: 200,
-          fontSize: 10,
-          width: 200,
-          textAlign: "center",
-        }}
-      >
-        {audioProfile}
-      </Text>
+        <Text
+          style={{
+            marginTop: 50,
+            fontFamily: "Lexend_200ExtraLight",
+            letterSpacing: 2,
+            color: "white",
+            fontSize: 40,
+            textAlign: "center",
+            textTransform: "uppercase",
+          }}
+        >
+          {username}
+        </Text>
 
-      {isFirst && renderChoice()}
-    </Animated.View>
+        <Text
+          style={{
+            color: "white",
+            marginTop: 200,
+            fontSize: 10,
+            width: 200,
+            textAlign: "center",
+          }}
+        >
+          {audioProfile}
+        </Text>
+
+        {isFirst && renderChoice()}
+        </View>
+
+    </TouchableWithoutFeedback>
+      </Animated.View>
   );
 };
 

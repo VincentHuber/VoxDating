@@ -91,7 +91,7 @@ const FeedScreen = () => {
     };
 
     const scaleIn = ()=>{
-      scale.setValue(0.97);
+      scale.setValue(0.98);
       Animated.spring(scale, {
         toValue:1,
         duration : 200,
