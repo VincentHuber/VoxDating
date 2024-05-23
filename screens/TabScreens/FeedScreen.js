@@ -25,34 +25,36 @@ import {
 const { height } = Dimensions.get("screen");
 
 const FeedScreen = () => {
-
-  
   //Valeur de l'id
   const [id, setId] = useState(null);
 
   // État pour stocker les utilisateurs filtrés
   const [userFiltered, setUserFiltered] = useState([]);
 
-  // Valeur pour suivre et animer la position (x et y) des éléments swipés.
+  // Valeur pour animer la position (x et y) des éléments swipés.
   const swipe = useRef(new Animated.ValueXY()).current;
-  
-  //Valeur pour déterminer la direction du swipe
+
+  // Valeur pour animer le swipe
   const titlSign = useRef(new Animated.Value(1)).current;
+
+  // Valeur pour animer l'opacité
+  const fade = useRef(new Animated.Value(0)).current;
 
   // Ajoutez un état pour suivre l'index du candidat affiché
   const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
 
-
   // Configuration du PanResponder pour gérer les gestes de glissement
-  const panResponder = PanResponder.create({  
-  onMoveShouldSetPanResponder: () => true,  // Toujours autoriser le PanResponder à gérer le geste
-    onPanResponderMove: (_, { dx, dy, y0 }) => {   // Déplacement du geste
-      swipe.setValue({ x: dx, y: dy });  // Mise à jour de la position de l'animation
-      titlSign.setValue(y0 > (height * 0.9) / 2 ? 1 : -1);  // Détermination de la direction du geste
+  const panResponder = PanResponder.create({
+    onMoveShouldSetPanResponder: () => true, // Toujours autoriser le PanResponder à gérer le geste
+    onPanResponderMove: (_, { dx, dy, y0 }) => {
+      // Déplacement du geste
+      swipe.setValue({ x: dx, y: dy }); // Mise à jour de la position de l'animation
+      titlSign.setValue(y0 > (height * 0.9) / 2 ? 1 : -1); // Détermination de la direction du geste
     },
-    onPanResponderRelease: (_, { dx, dy }) => { // Lorsque le geste est relâché
-      const direction = Math.sign(dx);  // Lorsque le geste est relâché
-      const isActionActive = Math.abs(dx) > 100;  // Vérifie si le geste est suffisant pour déclencher une action
+    onPanResponderRelease: (_, { dx, dy }) => {
+      // Lorsque le geste est relâché
+      const direction = Math.sign(dx); // Lorsque le geste est relâché
+      const isActionActive = Math.abs(dx) > 100; // Vérifie si le geste est suffisant pour déclencher une action
 
       // Si le geste est suffisant, lancer l'animation pour retirer la carte
       if (isActionActive) {
@@ -61,8 +63,7 @@ const FeedScreen = () => {
           toValue: { x: direction * 500, y: dy },
           useNativeDriver: true,
         }).start(removeTopCandidate);
-
-      // Sinon, revenir à la position initiale
+        // Sinon, revenir à la position initiale
       } else {
         Animated.spring(swipe, {
           toValue: { x: 0, y: 0 },
@@ -74,17 +75,35 @@ const FeedScreen = () => {
   });
 
 
-// Fonction pour supprimer le candidat en haut de la pile et passer au suivant
-const removeTopCandidate = useCallback(() => {
-  setCurrentCandidateIndex((prevIndex) => prevIndex + 1);
-  swipe.setValue({ x: 0, y: 0 }); // Réinitialise la position de l'animation
-}, [swipe]);
+  // Fonction pour effectuer l'animation fadeIn
+  useEffect(() => {
+    const fadeIn = () => {
+      fade.setValue(0);
+      Animated.timing(fade, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    };
+    fadeIn();
+  }, [currentCandidateIndex]);
+
+
+  // Fonction pour supprimer le candidat en haut de la pile et passer au suivant
+  const removeTopCandidate = useCallback(() => {
+    setCurrentCandidateIndex((prevIndex) => {
+      // Réinitialiser l'index à 0 si on atteint la fin de la liste
+      return prevIndex + 1 >= userFiltered.length ? 0 : prevIndex + 1;
+    });
+    swipe.setValue({ x: 0, y: 0 }); // Réinitialise la position de l'animation
+  }, [swipe, userFiltered.length]);
 
 
   // Fonction pour gérer les choix de l'utilisateur
   const handleChoice = useCallback(
     (direction) => {
-      Animated.timing(swipe.x, {  // Commence une animation sur la propriété x de swipe
+      Animated.timing(swipe.x, {
+        // Commence une animation sur la propriété x de swipe
         toValue: direction * 500, // Définit la valeur finale de l'animation
         duration: 500, // Définit la durée de l'animation en milliseconde
         useNativeDriver: true, // permet une meilleur fluidité d'animation
@@ -114,7 +133,7 @@ const removeTopCandidate = useCallback(() => {
       }
     };
     fetchUsers();
-  }, [!userFiltered.length]); 
+  }, [!userFiltered.length]);
 
 
   //Récupère l'id de l'user
@@ -134,8 +153,7 @@ const removeTopCandidate = useCallback(() => {
       }
     };
     fetchToken();
-  }, []);  
-  
+  }, []);
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({
@@ -163,18 +181,26 @@ const removeTopCandidate = useCallback(() => {
         alignItems: "center",
       }}
     >
-      {userFiltered.length > 0 && (
-      <Candidate
-        key={currentCandidateIndex}
-        username={userFiltered[currentCandidateIndex].username}
-        audioProfile={userFiltered[currentCandidateIndex].audioProfile}
-        isFirst={true}
-        swipe={swipe}
-        titlSign={titlSign}
-        {...panResponder.panHandlers}
-      />
-    )}
-
+      <Animated.View
+        style={{
+          alignItems: "center",
+          height: "100%",
+          width: "100%",
+          opacity: fade,
+        }}
+      >
+        {userFiltered.length > 0 && (
+          <Candidate
+            key={currentCandidateIndex}
+            username={userFiltered[currentCandidateIndex].username}
+            audioProfile={userFiltered[currentCandidateIndex].audioProfile}
+            isFirst={true}
+            swipe={swipe}
+            titlSign={titlSign}
+            {...panResponder.panHandlers}
+          />
+        )}
+      </Animated.View>
       <Footer handleChoice={handleChoice} />
     </SafeAreaView>
   );
