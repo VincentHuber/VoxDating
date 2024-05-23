@@ -27,18 +27,20 @@ const Candidate = ({
   const soundRef = useRef(null);
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
 
+  // Fonction pour charger et lire l'audio
   const loadAudio = async () => {
     try {
-      const { sound } = await Audio.Sound.createAsync({ uri: audioProfile });
+      const { sound } = await Audio.Sound.createAsync({ uri: audioProfile }); // Charge le son depuis l'URI
       console.log("Sound loaded successfully:", sound);
-      soundRef.current = sound;
+      soundRef.current = sound; // Stocke le son dans la référence
       setIsSoundLoaded(true);
-      await sound.playAsync({ isLooping: true });
+      await sound.playAsync(); // Lit le son en boucle
     } catch (error) {
       console.error("Error loading audio:", error);
     }
   };
 
+  // useEffect pour charger l'audio à la création du composant
   useEffect(() => {
     console.log("Executing useEffect to load audio");
     loadAudio();
@@ -52,6 +54,7 @@ const Candidate = ({
     };
   }, [audioProfile]);
 
+  // useEffect pour rejouer le son une fois qu'il est chargé
   useEffect(() => {
     if (soundRef.current && isSoundLoaded) {
       const replaySound = async () => {
