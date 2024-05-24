@@ -6,7 +6,7 @@ import {
   Image,
 } from "react-native";
 import React from "react";
-
+import { BlurView } from "expo-blur";
 import {
   useFonts,
   Lexend_900Black,
@@ -79,7 +79,7 @@ export default function LikesScreen() {
         style={{
           width: "80%",
           justifyContent: "space-around",
-          marginTop: 40,
+          paddingTop: 40,
           flexDirection: "row",
           flexWrap: "wrap",
         }}
@@ -281,6 +281,12 @@ export default function LikesScreen() {
             VICTOIRE
           </Text>
         </View>
+
+        <BlurView
+          intensity={15}
+          tint="dark"
+          style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }}
+        />
       </View>
     </SafeAreaView>
   );
