@@ -27,6 +27,7 @@ const Candidate = ({
   const soundRef = useRef(null);
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
   const [play, setPlay] = useState(false);
+  const [tabPlay, setTabPlay] = useState(true)
 
   // Fonction pour charger et lire l'audio
   const loadAudio = async () => {
@@ -74,6 +75,15 @@ const Candidate = ({
   async function pauseRecording() {
     setPlay(!play);
     if (!play) {
+      await soundRef.current.pauseAsync();
+    } else {
+      await soundRef.current.replayAsync({ isLooping: true });
+    }
+  }
+
+   // Fonction pour mettre en pause ou lire l'audio au clic sur le tab
+   async function pauseTabRecording() {
+    if (tabPlay) {
       await soundRef.current.pauseAsync();
     } else {
       await soundRef.current.replayAsync({ isLooping: true });
@@ -159,51 +169,55 @@ const Candidate = ({
 
   return (
     <Animated.View
-        style={{
-          position: "absolute",
-          backgroundColor: "black",
-          width: "100%",
-          height: "100%",
-          borderRadius: 15,
-          alignItems: "center",
-          ...(isFirst ? animatedCandidateStyle : {}),
-        }}
-        {...rest}
-      >
-    <TouchableWithoutFeedback onPress={pauseRecording}>
-    <View style={{alignItems:"center"}}>
-
-        <Text
+      style={{
+        position: "absolute",
+        backgroundColor: "black",
+        width: "100%",
+        height: "100%",
+        borderRadius: 15,
+        alignItems: "center",
+        ...(isFirst ? animatedCandidateStyle : {}),
+      }}
+      {...rest}
+    >
+      <TouchableWithoutFeedback onPress={pauseRecording}>
+        <View
           style={{
-            marginTop: 50,
-            fontFamily: "Lexend_200ExtraLight",
-            letterSpacing: 2,
-            color: "white",
-            fontSize: 40,
-            textAlign: "center",
-            textTransform: "uppercase",
+            width: "100%",
+            height: "100%",
+            alignItems: "center",
           }}
         >
-          {username}
-        </Text>
+          <Text
+            style={{
+              marginTop: 50,
+              fontFamily: "Lexend_200ExtraLight",
+              letterSpacing: 2,
+              color: "white",
+              fontSize: 40,
+              textAlign: "center",
+              textTransform: "uppercase",
+            }}
+          >
+            {username}
+          </Text>
 
-        <Text
-          style={{
-            color: "white",
-            marginTop: 200,
-            fontSize: 10,
-            width: 200,
-            textAlign: "center",
-          }}
-        >
-          {audioProfile}
-        </Text>
+          <Text
+            style={{
+              color: "white",
+              marginTop: 200,
+              fontSize: 10,
+              width: 200,
+              textAlign: "center",
+            }}
+          >
+            {audioProfile}
+          </Text>
 
-        {isFirst && renderChoice()}
+          {isFirst && renderChoice()}
         </View>
-
-    </TouchableWithoutFeedback>
-      </Animated.View>
+      </TouchableWithoutFeedback>
+    </Animated.View>
   );
 };
 

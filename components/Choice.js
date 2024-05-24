@@ -1,8 +1,6 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { FontAwesome } from "@expo/vector-icons";
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faHeart, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -50,7 +48,6 @@ const Choice = ({ name, type }) => {
   return (
     <View style={{justifyContent:"center", alignItems:"center"}}>
       <FontAwesome name= {name} size={40} color={color} />
-      {/* <FontAwesomeIcon icon= {name} size={55} color={color}/> */}
     </View>
   );
 };

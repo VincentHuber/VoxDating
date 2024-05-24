@@ -1,53 +1,55 @@
-import { useNavigation } from '@react-navigation/core'
-import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { auth } from '../../firebase'
+import { useNavigation } from "@react-navigation/core";
+import React from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { auth } from "../../firebase";
 
 const ProfilScreen = () => {
-    
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   const handleSignOut = () => {
     auth
       .signOut()
       .then(() => {
-        navigation.replace("Login")
+        navigation.replace("Login");
       })
-      .catch(error => alert(error.message))
-  }
+      .catch((error) => alert(error.message));
+  };
 
   return (
-    <View style={styles.container}>
-      <Text>Email: {auth.currentUser?.email}</Text>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "black",
+      }}
+    >
+      <Text style={{ color: "white" }}>Email: {auth.currentUser?.email}</Text>
       <TouchableOpacity
         onPress={handleSignOut}
-        style={styles.button}
+        style={{
+          backgroundColor: "white",
+          width: "60%",
+          padding: 15,
+          borderRadius: 10,
+          alignItems: "center",
+          marginTop: 40,
+        }}
       >
-        <Text style={styles.buttonText}>Sign out</Text>
+        <Text
+          style={{
+            color: "black",
+            fontWeight: "700",
+            fontSize: 16,
+          }}
+        >
+          Se déconnecter
+        </Text>
       </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
-export default ProfilScreen
+export default ProfilScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-   button: {
-    backgroundColor: '#0782F9',
-    width: '60%',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 40,
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-})
+
