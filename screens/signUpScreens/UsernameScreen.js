@@ -2,7 +2,6 @@ import {
     TouchableOpacity,
     TextInput,
     Image,
-    StyleSheet,
     Text,
     View,
     SafeAreaView,
@@ -186,6 +185,5 @@ import {
       </SafeAreaView>
     );
   }
-  
-  const styles = StyleSheet.create();
+
   
