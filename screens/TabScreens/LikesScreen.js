@@ -5,10 +5,12 @@ import {
   View,
   SafeAreaView,
   ScrollView,
-  useWindowDimensions
+  useWindowDimensions,
 } from "react-native";
 import React from "react";
 import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
+
 import {
   useFonts,
   Lexend_900Black,
@@ -26,23 +28,22 @@ import { Dimensions } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 
 export default function LikesScreen() {
-
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = useWindowDimensions().height;
 
   const elementWidth = windowWidth * 0.31; // Largeur de l'élément
   const centerPosition = (windowWidth - elementWidth) / 2 - 13;
 
- const smallScreen = 700
- let paddingBottomFactor
+  const smallScreen = 700;
+  let paddingBottomFactor;
 
- if (windowHeight < smallScreen){
-  paddingBottomFactor = 0.3
- } else {
-  paddingBottomFactor = 0.18
- }
+  if (windowHeight < smallScreen) {
+    paddingBottomFactor = 0.3;
+  } else {
+    paddingBottomFactor = 0.18;
+  }
 
- const paddingBottom = windowHeight*paddingBottomFactor
+  const paddingBottom = windowHeight * paddingBottomFactor;
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({
@@ -74,7 +75,7 @@ export default function LikesScreen() {
         contentContainerStyle={{
           justifyContent: "center",
           alignItems: "center",
-          paddingBottom: paddingBottom
+          paddingBottom: paddingBottom,
         }}
         style={{
           flex: 1,
@@ -408,7 +409,7 @@ export default function LikesScreen() {
                 marginLeft: 20,
                 fontFamily: "Lexend_600SemiBold",
                 fontSize: 16,
-                flexShrink:1,
+                flexShrink: 1,
               }}
             >
               Match avec des gens du monde entier
@@ -436,10 +437,9 @@ export default function LikesScreen() {
               Contrôle qui peut voir ton profil
             </Text>
           </View>
-          
         </View>
       </ScrollView>
-     
+
       <TouchableOpacity
         style={{
           width: "80%",
@@ -463,6 +463,17 @@ export default function LikesScreen() {
         </Text>
       </TouchableOpacity>
 
+      <LinearGradient
+        colors={["rgba(0,0,0,0)", "black"]}
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: 260,
+          zIndex: 2,
+        }}
+      />
 
       {/* <View
         style={{
