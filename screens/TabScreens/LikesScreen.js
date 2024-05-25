@@ -1,9 +1,11 @@
 import {
   TouchableOpacity,
   Text,
+  Image,
   View,
   SafeAreaView,
-  Image,
+  ScrollView,
+  useWindowDimensions
 } from "react-native";
 import React from "react";
 import { BlurView } from "expo-blur";
@@ -20,15 +22,28 @@ import {
   Lexend_100Thin,
 } from "@expo-google-fonts/lexend";
 
-import { Dimensions } from 'react-native';
-
+import { Dimensions } from "react-native";
+import { Entypo } from "@expo/vector-icons";
 
 export default function LikesScreen() {
 
-  const windowWidth = Dimensions.get('window').width;
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = useWindowDimensions().height;
 
   const elementWidth = windowWidth * 0.31; // Largeur de l'élément
-  const centerPosition = (windowWidth - elementWidth) / 2 -13; 
+  const centerPosition = (windowWidth - elementWidth) / 2 - 13;
+
+ const smallScreen = 700
+ const mediumScreen = 1500
+ let paddingBottomFactor
+
+ if (windowHeight < smallScreen){
+  paddingBottomFactor = 0.3
+ } else {
+  paddingBottomFactor = 0.18
+ }
+
+ const paddingBottom = windowHeight*paddingBottomFactor
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({
@@ -56,273 +71,390 @@ export default function LikesScreen() {
         backgroundColor: "black",
       }}
     >
-      <Text
-        style={{
-          width: "80%",
-          marginTop: 25,
-
-          textAlign: "center",
-          fontFamily: "Lexend_900Black",
-          fontSize: 34,
-          color: "white",
+      <ScrollView
+        contentContainerStyle={{
+          justifyContent: "center",
+          alignItems: "center",
+          paddingBottom: paddingBottom
         }}
-      >
-        DÉCOUVRE QUI T'AS LIKÉ
-      </Text>
-
-      <Text
         style={{
-          width: "80%",
-          marginTop: 20,
-
-          textAlign: "center",
-          fontFamily: "Lexend_400Regular",
-          fontSize: 18,
-          color: "white",
-        }}
-      >
-        Active le Passe Premium et accède à la liste complète de toutes les
-        personnes qui t'ont liké.
-      </Text>
-      <View style={{
-        marginTop: 40,
-        height:"45%", 
-        width:"90%", 
-        alignItem:"center", 
-        borderColor:"red", 
-        borderWidth:1 
-        }}>
-      <View
-        style={{
-          height: "70%",
+          flex: 1,
           width: "100%",
-          
-          flexDirection: "row",
-          justifyContent: "space-between",
-          zIndex: 2,
         }}
       >
-        <TouchableOpacity
+        <Text
           style={{
-            width: "31%",
-            height: "100%",
-            backgroundColor: "#292929",
-            borderRadius: "15",
-            justifyContent: "space-between",
-            alignItems: "center",
+            width: "80%",
+            marginTop: 10,
+
+            textAlign: "center",
+            fontFamily: "Lexend_900Black",
+            fontSize: 34,
+            color: "white",
           }}
         >
-          <View style={{}}></View>
+          DÉCOUVRE QUI T'AS LIKÉ
+        </Text>
 
-          <View>
-            <Text
-              style={{
-                fontFamily: "Lexend_500Medium",
-                fontSize: 48,
-                color: "white",
-                marginBottom: -5,
-                textAlign: "center",
-              }}
-            >
-              12
-            </Text>
+        <Text
+          style={{
+            width: "80%",
+            marginTop: 20,
 
-            <Text
-              style={{
-                fontFamily: "Lexend_700Bold",
-                fontSize: 25,
-                color: "white",
-                textAlign: "center",
-              }}
-            >
-              mois
-            </Text>
-          </View>
-          <View>
-            <Text
-              style={{
-                fontFamily: "Lexend_400Regular",
-                fontSize: 21,
-                color: "white",
-                textAlign: "center",
-              }}
-            >
-              42,99€
-            </Text>
+            textAlign: "center",
+            fontFamily: "Lexend_400Regular",
+            fontSize: 18,
+            color: "white",
+          }}
+        >
+          Active le Pass Premium et accède à la liste complète de toutes les
+          personnes qui t'ont liké.
+        </Text>
 
-            <Text
-              style={{
-                fontFamily: "Lexend_600SemiBold",
-                fontSize: 14,
-                color: "white",
-                marginBottom: 14,
-                textAlign: "center",
-                marginBottom: 12,
-              }}
-            >
-              3,58€/mois
-            </Text>
-          </View>
-        </TouchableOpacity>
         <View
           style={{
-            position: "absolute",
-            width: "31%",
-            height: 30,
-            borderRadius: 20,
-            backgroundColor: "black",
-            borderWidth: 1,
-            borderColor: "white",
-            left: centerPosition,
-            top: -15,
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 2
+            marginTop: 40,
+            height: 200,
+            width: "90%",
+            alignItem: "center",
+            // borderColor:"blue",
+            // borderWidth:1,
+            zIndex: 5,
           }}
         >
-          <Text style={{
-            fontFamily: "Lexend_500Medium", 
-            color:"white", 
-            fontSize: 14
-            }}>
-            POPULAIRE
-          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              zIndex: 2,
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                width: "31%",
+                height: "100%",
+                backgroundColor: "#292929",
+                borderRadius: "15",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <View style={{}}></View>
 
+              <View>
+                <Text
+                  style={{
+                    fontFamily: "Lexend_500Medium",
+                    fontSize: 48,
+                    color: "white",
+                    marginBottom: -5,
+                    textAlign: "center",
+                  }}
+                >
+                  12
+                </Text>
+
+                <Text
+                  style={{
+                    fontFamily: "Lexend_700Bold",
+                    fontSize: 25,
+                    color: "white",
+                    textAlign: "center",
+                  }}
+                >
+                  mois
+                </Text>
+              </View>
+              <View>
+                <Text
+                  style={{
+                    fontFamily: "Lexend_400Regular",
+                    fontSize: 21,
+                    color: "white",
+                    textAlign: "center",
+                  }}
+                >
+                  42,99€
+                </Text>
+
+                <Text
+                  style={{
+                    fontFamily: "Lexend_600SemiBold",
+                    fontSize: 14,
+                    color: "white",
+                    marginBottom: 14,
+                    textAlign: "center",
+                    marginBottom: 12,
+                  }}
+                >
+                  3,58€/mois
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <View
+              style={{
+                position: "absolute",
+                width: "31%",
+                height: 30,
+                borderRadius: 20,
+                backgroundColor: "black",
+                borderWidth: 1,
+                borderColor: "white",
+                left: centerPosition,
+                top: -15,
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 2,
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Lexend_500Medium",
+                  color: "white",
+                  fontSize: 14,
+                }}
+              >
+                POPULAIRE
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={{
+                width: "31%",
+                height: "100%",
+                backgroundColor: "white",
+                borderRadius: "15",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <View></View>
+
+              <View>
+                <Text
+                  style={{
+                    fontFamily: "Lexend_500Medium",
+                    fontSize: 48,
+                    color: "black",
+                    marginBottom: -5,
+                    textAlign: "center",
+                  }}
+                >
+                  6
+                </Text>
+
+                <Text
+                  style={{
+                    fontFamily: "Lexend_700Bold",
+                    fontSize: 25,
+                    color: "black",
+                    textAlign: "center",
+                  }}
+                >
+                  mois
+                </Text>
+              </View>
+              <View>
+                <Text
+                  style={{
+                    fontFamily: "Lexend_400Regular",
+                    fontSize: 21,
+                    color: "black",
+                    textAlign: "center",
+                  }}
+                >
+                  36,99€
+                </Text>
+
+                <Text
+                  style={{
+                    fontFamily: "Lexend_600SemiBold",
+                    fontSize: 14,
+                    color: "black",
+                    marginBottom: 12,
+                    textAlign: "center",
+                  }}
+                >
+                  6,16€/mois
+                </Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                width: "31%",
+                height: "100%",
+                backgroundColor: "#292929",
+                borderRadius: 15,
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <View style={{}}></View>
+
+              <View>
+                <Text
+                  style={{
+                    fontFamily: "Lexend_500Medium",
+                    fontSize: 48,
+                    color: "white",
+                    marginBottom: -5,
+                    textAlign: "center",
+                  }}
+                >
+                  1
+                </Text>
+
+                <Text
+                  style={{
+                    fontFamily: "Lexend_700Bold",
+                    fontSize: 25,
+                    color: "white",
+                    textAlign: "center",
+                  }}
+                >
+                  mois
+                </Text>
+              </View>
+              <View>
+                <Text
+                  style={{
+                    fontFamily: "Lexend_400Regular",
+                    fontSize: 21,
+                    color: "white",
+                    textAlign: "center",
+                  }}
+                >
+                  15,99€
+                </Text>
+
+                <Text
+                  style={{
+                    fontFamily: "Lexend_600SemiBold",
+                    fontSize: 14,
+                    color: "white",
+                    marginBottom: 12,
+                    textAlign: "center",
+                  }}
+                >
+                  15,99€/mois
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity
+
+        <View
           style={{
-            width: "31%",
-            height: "100%",
-            backgroundColor: "white",
-            borderRadius: "15",
-            justifyContent: "space-between",
+            marginTop: 20,
+            paddingTop: 10,
+            // borderWidth: 1,
             alignItems: "center",
+            borderColor: "white",
+            borderRadius: 15,
+            width: "90%",
+            height: 230,
+            zIndex: 0,
           }}
         >
-          <View></View>
-
-          <View>
+          <View
+            style={{
+              height: 40,
+              width: "85%",
+              alignItems: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Entypo name="check" size={24} color="white" />
             <Text
               style={{
-                fontFamily: "Lexend_500Medium",
-                fontSize: 48,
-                color: "black",
-                marginBottom: -5,
-                textAlign: "center",
-              }}
-            >
-              6
-            </Text>
-
-            <Text
-              style={{
-                fontFamily: "Lexend_700Bold",
-                fontSize: 25,
-                color: "black",
-                textAlign: "center",
-              }}
-            >
-              mois
-            </Text>
-          </View>
-          <View>
-            <Text
-              style={{
-                fontFamily: "Lexend_400Regular",
-                fontSize: 21,
-                color: "black",
-                textAlign: "center",
-              }}
-            >
-              36,99€
-            </Text>
-
-            <Text
-              style={{
+                color: "white",
+                marginLeft: 20,
                 fontFamily: "Lexend_600SemiBold",
-                fontSize: 14,
-                color: "black",
-                marginBottom: 12,
-                textAlign: "center",
+                fontSize: 16,
               }}
             >
-              6,16€/mois
+              Likes illimités
             </Text>
           </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            width: "31%",
-            height: "100%",
-            backgroundColor: "#292929",
-            borderRadius: "15",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <View style={{}}></View>
-
-          <View>
+          <View
+            style={{
+              height: 40,
+              width: "85%",
+              alignItems: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Entypo name="check" size={24} color="white" />
             <Text
               style={{
-                fontFamily: "Lexend_500Medium",
-                fontSize: 48,
                 color: "white",
-                marginBottom: -5,
-                textAlign: "center",
-              }}
-            >
-              1
-            </Text>
-
-            <Text
-              style={{
-                fontFamily: "Lexend_700Bold",
-                fontSize: 25,
-                color: "white",
-                textAlign: "center",
-              }}
-            >
-              mois
-            </Text>
-          </View>
-          <View>
-            <Text
-              style={{
-                fontFamily: "Lexend_400Regular",
-                fontSize: 21,
-                color: "white",
-                textAlign: "center",
-              }}
-            >
-              15,99€
-            </Text>
-
-            <Text
-              style={{
+                marginLeft: 20,
                 fontFamily: "Lexend_600SemiBold",
-                fontSize: 14,
-                color: "white",
-                marginBottom: 12,
-                textAlign: "center",
+                fontSize: 16,
               }}
             >
-              15,99€/mois
+              Découvre qui t'as liké
             </Text>
           </View>
-        </TouchableOpacity>
-      </View>
+
+          <View
+            style={{
+              height: 60,
+              width: "85%",
+              alignItems: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Entypo name="check" size={24} color="white" />
+            <Text
+              style={{
+                color: "white",
+                marginLeft: 20,
+                fontFamily: "Lexend_600SemiBold",
+                fontSize: 16,
+                flexShrink:1,
+              }}
+            >
+              Match avec des gens du monde entier
+            </Text>
+          </View>
+
+          <View
+            style={{
+              height: 60,
+              width: "85%",
+              alignItems: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Entypo name="check" size={24} color="white" />
+            <Text
+              style={{
+                flexShrink: 1,
+                color: "white",
+                marginLeft: 20,
+                fontFamily: "Lexend_600SemiBold",
+                fontSize: 16,
+              }}
+            >
+              Contrôle qui peut voir ton profil
+            </Text>
+          </View>
+          
+        </View>
+      </ScrollView>
 
       <TouchableOpacity
         style={{
-          width: "100%",
-          marginTop: 12,
+          width: "80%",
+          position: "absolute",
           height: 55,
+          bottom: 135,
           borderRadius: 14,
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "white",
+          zIndex: 3,
         }}
       >
         <Text
@@ -334,14 +466,16 @@ export default function LikesScreen() {
           CONTINUER
         </Text>
       </TouchableOpacity>
-</View>
       {/* <View
         style={{
+          position:"absolute",
+          top:260,
           width: "80%",
           justifyContent: "space-around",
           paddingTop: 40,
           flexDirection: "row",
           flexWrap: "wrap",
+          opacity: 0.5,
         }}
       >
         <View style={{ marginBottom: 25 }}>
