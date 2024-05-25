@@ -34,7 +34,6 @@ export default function LikesScreen() {
   const centerPosition = (windowWidth - elementWidth) / 2 - 13;
 
  const smallScreen = 700
- const mediumScreen = 1500
  let paddingBottomFactor
 
  if (windowHeight < smallScreen){
@@ -95,7 +94,6 @@ export default function LikesScreen() {
         >
           DÉCOUVRE QUI T'AS LIKÉ
         </Text>
-
         <Text
           style={{
             width: "80%",
@@ -117,8 +115,6 @@ export default function LikesScreen() {
             height: 200,
             width: "90%",
             alignItem: "center",
-            // borderColor:"blue",
-            // borderWidth:1,
             zIndex: 5,
           }}
         >
@@ -443,7 +439,7 @@ export default function LikesScreen() {
           
         </View>
       </ScrollView>
-
+     
       <TouchableOpacity
         style={{
           width: "80%",
@@ -466,6 +462,8 @@ export default function LikesScreen() {
           CONTINUER
         </Text>
       </TouchableOpacity>
+
+
       {/* <View
         style={{
           position:"absolute",
