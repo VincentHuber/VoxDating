@@ -18,7 +18,6 @@ import {
   fromAddress,
 } from "react-geocode";
 
-
 import {
   useFonts,
   Lexend_900Black,
