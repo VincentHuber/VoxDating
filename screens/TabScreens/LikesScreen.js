@@ -31,7 +31,7 @@ export default function LikesScreen() {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = useWindowDimensions().height;
 
-  const elementWidth = windowWidth * 0.31; // Largeur de l'élément
+  const elementWidth = windowWidth * 0.31; 
   const centerPosition = (windowWidth - elementWidth) / 2 - 13;
 
   const smallScreen = 700;
@@ -344,7 +344,6 @@ export default function LikesScreen() {
           style={{
             marginTop: 20,
             paddingTop: 10,
-            // borderWidth: 1,
             alignItems: "center",
             borderColor: "white",
             borderRadius: 15,
@@ -464,7 +463,7 @@ export default function LikesScreen() {
       </TouchableOpacity>
 
       <LinearGradient
-        colors={["rgba(0,0,0,0)", "black"]}
+        colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.6)", "black"]}
         style={{
           position: "absolute",
           left: 0,
