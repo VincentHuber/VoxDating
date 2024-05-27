@@ -93,6 +93,9 @@ const ProfilScreen = () => {
     auth
       .signOut()
       .then(() => {
+        setUser(null)
+        setId(null)
+        AsyncStorage.clear()
         navigation.replace("Login");
       })
       .catch((error) => alert(error.message));

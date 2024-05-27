@@ -117,6 +117,10 @@ const LoginScreen = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+
+      // Stockage des informations user dans AsyncStorage
+      await AsyncStorage.setItem("@user", JSON.stringify(user));
+      
       navigation.navigate("TabNavigator");
     } catch (error) {
       Alert.alert("Erreur lors de la connexion", error.message);
