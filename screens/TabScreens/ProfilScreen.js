@@ -99,25 +99,12 @@ const ProfilScreen = () => {
           PROFIL
         </Text>
 
-        {/* <Text
-          style={{
-            width: "80%",
-            marginTop: 20,
-
-            textAlign: "center",
-            fontFamily: "Lexend_400Regular",
-            fontSize: 18,
-            color: "white",
-          }}
-        >
-          Tu pourras mettre ta localisation à jour dans ton profil.
-        </Text> */}
         {/* <Text style={{fontFamily:"Lexend_400Regular", color: "white" }}>Email: {auth.currentUser?.email}</Text> */}
 
         <View
           style={{
             marginTop: 40,
-            height: 280,
+            height: 277,
             width: "80%",
             backgroundColor: "#292929",
             borderRadius: 15,
@@ -126,10 +113,10 @@ const ProfilScreen = () => {
         >
           <TouchableOpacity
             style={{
-              width: "85%",
-              height: 55,
-              borderColor: "white",
-              borderBottomWidth: 0.4,
+              width: "100%",
+              height: 54,
+              paddingRight:8,
+              paddingLeft:23,
               justifyContent: "space-between",
               flexDirection: "row",
               alignItems: "center",
@@ -159,12 +146,14 @@ const ProfilScreen = () => {
             </View>
           </TouchableOpacity>
 
+          <View style={{height:1, width:"100%", backgroundColor:"black"}} />
+
           <TouchableOpacity
             style={{
-              width: "85%",
-              height: 55,
-              borderColor: "white",
-              borderBottomWidth: 0.4,
+              width: "100%",
+              height: 54,
+              paddingRight:8,
+              paddingLeft:23,
               justifyContent: "space-between",
               flexDirection: "row",
               alignItems: "center",
@@ -194,12 +183,14 @@ const ProfilScreen = () => {
             </View>
           </TouchableOpacity>
 
+          <View style={{height:1, width:"100%", backgroundColor:"black"}} />
+
           <TouchableOpacity
             style={{
-              width: "85%",
-              height: 55,
-              borderColor: "white",
-              borderBottomWidth: 0.4,
+              width: "100%",
+              height: 54,
+              paddingRight:8,
+              paddingLeft:23,
               justifyContent: "space-between",
               flexDirection: "row",
               alignItems: "center",
@@ -229,12 +220,14 @@ const ProfilScreen = () => {
             </View>
           </TouchableOpacity>
 
+          <View style={{height:1, width:"100%", backgroundColor:"black"}} />
+
           <TouchableOpacity
             style={{
-              width: "85%",
-              height: 55,
-              borderColor: "white",
-              borderBottomWidth: 0.4,
+              width: "100%",
+              paddingRight:8,
+              paddingLeft:23,
+              height: 54,
               justifyContent: "space-between",
               flexDirection: "row",
               alignItems: "center",
@@ -264,10 +257,14 @@ const ProfilScreen = () => {
             </View>
           </TouchableOpacity>
 
+          <View style={{height:1, width:"100%", backgroundColor:"black"}} />
+
           <TouchableOpacity
             style={{
-              width: "85%",
-              height: 55,
+              width: "100%",
+              paddingRight:8,
+              paddingLeft:23,
+              height: 54,
               justifyContent: "space-between",
               flexDirection: "row",
               alignItems: "center",
@@ -336,7 +333,7 @@ const ProfilScreen = () => {
         <View
           style={{
             marginTop: 10,
-            height: 112,
+            height: 111,
             width: "80%",
             backgroundColor: "#292929",
             borderRadius: 15,
@@ -345,10 +342,10 @@ const ProfilScreen = () => {
         >
           <TouchableOpacity
             style={{
-              width: "85%",
-              height: 55,
-              borderColor: "white",
-              borderBottomWidth: 0.4,
+              width: "100%",
+              paddingRight:8,
+              paddingLeft:23,
+              height: 54,
               justifyContent: "space-between",
               flexDirection: "row",
               alignItems: "center",
@@ -378,10 +375,14 @@ const ProfilScreen = () => {
             </View>
           </TouchableOpacity>
 
+          <View style={{height:1, width:"100%", backgroundColor:"black"}} />
+
           <TouchableOpacity
             style={{
-              width: "85%",
-              height: 55,
+              width: "100%",
+              paddingRight:8,
+              paddingLeft:23,
+              height: 54,
               justifyContent: "space-between",
               flexDirection: "row",
               alignItems: "center",
@@ -442,7 +443,7 @@ const ProfilScreen = () => {
           style={{
             backgroundColor: "black",
             width: "80%",
-            height: 55,
+            height: 54,
             borderRadius: 10,
             justifyContent: "center",
             borderWidth:1,
