@@ -7,6 +7,7 @@ import { collection, getDocs } from "firebase/firestore";
 import Candidate from "../../components/Candidate";
 import Footer from "../../components/Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getDoc, doc } from "firebase/firestore";
 
 import {
   useFonts,
@@ -25,7 +26,6 @@ import {
 const { height } = Dimensions.get("screen");
 
 const FeedScreen = () => {
-  
   //Valeur de l'id
   const [id, setId] = useState(null);
 
@@ -46,6 +46,8 @@ const FeedScreen = () => {
 
   // Ajoutez un état pour suivre l'index du candidat affiché
   const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
+
+  const [userWishedGender, setUserWishedGender] = useState(null);
 
   // Configuration du PanResponder pour gérer les gestes de glissement
   const panResponder = PanResponder.create({
@@ -78,10 +80,8 @@ const FeedScreen = () => {
     },
   });
 
-
   // Fonction pour effectuer l'animation d'opacité et d'échelle
   useEffect(() => {
-
     const fadeIn = () => {
       fade.setValue(0);
       Animated.timing(fade, {
@@ -91,18 +91,17 @@ const FeedScreen = () => {
       }).start();
     };
 
-    const scaleIn = ()=>{
+    const scaleIn = () => {
       scale.setValue(0.98);
       Animated.spring(scale, {
-        toValue:1,
-        duration : 200,
-        useNativeDriver : true,
-      }).start()
-    }
-    scaleIn()
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    };
+    scaleIn();
     fadeIn();
   }, [currentCandidateIndex]);
-
 
   // Fonction pour supprimer le candidat en haut de la pile et passer au suivant
   const removeTopCandidate = useCallback(() => {
@@ -110,19 +109,50 @@ const FeedScreen = () => {
     swipe.setValue({ x: 0, y: 0 }); // Réinitialise la position de l'animation
   }, [swipe]);
 
-
   // Fonction pour gérer les choix de l'utilisateur
   const handleChoice = useCallback(
     (direction) => {
       Animated.timing(swipe.x, {
-        // Commence une animation sur la propriété x de swipe
-        toValue: direction * 500, // Définit la valeur finale de l'animation
-        duration: 500, // Définit la durée de l'animation en milliseconde
-        useNativeDriver: true, // permet une meilleur fluidité d'animation
+        toValue: direction * 500,
+        duration: 500,
+        useNativeDriver: true,
       }).start(removeTopCandidate); // Démarre l'animation et appelle removeTopCandidate à la fin
     },
     [removeTopCandidate, swipe.x]
   );
+
+
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        let userData = await AsyncStorage.getItem("@user");
+        if (userData !== null) {
+          userData = JSON.parse(userData);
+          if (userData.uid) {
+            // console.log("uid :", userData.uid)
+            let userDoc = await getDoc(doc(db, "users", userData.uid));
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              setUserWishedGender(userData.wishedGender);
+              console.log("userWishedGender :", userData.wishedGender)
+            }
+          }
+        }
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des données utilisateur :",
+          error
+        );
+      }
+    };
+  
+    
+      fetchUserData();
+  
+  }, [id]);
+
+
 
 
   //Fonction pour récupérer les users dans firestore
@@ -146,26 +176,6 @@ const FeedScreen = () => {
     };
     fetchUsers();
   }, [!userFiltered.length]);
-
-  
-  //Récupère l'id de l'user
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        let userData = await AsyncStorage.getItem("@user");
-        if (userData !== null) {
-          userData = JSON.parse(userData);
-          setId(userData.uid);
-        }
-      } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des données utilisateur :",
-          error
-        );
-      }
-    };
-    fetchToken();
-  }, []);
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({
@@ -199,7 +209,7 @@ const FeedScreen = () => {
           height: "100%",
           width: "100%",
           opacity: fade,
-          transform: [{ scale }]
+          transform: [{ scale }],
         }}
       >
         {userFiltered.length > 0 && (

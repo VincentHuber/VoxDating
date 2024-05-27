@@ -1,4 +1,4 @@
-import { Text, Animated, View, TouchableWithoutFeedback } from "react-native";
+import { Text, Animated, View, TouchableWithoutFeedback, ActivityIndicator } from "react-native";
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import Choice from "./Choice";
 import { Audio } from "expo-av";
@@ -33,7 +33,6 @@ const Candidate = ({
   const loadAudio = async () => {
     try {
       const { sound } = await Audio.Sound.createAsync({ uri: audioProfile }); // Charge le son depuis l'URI
-      console.log("Sound loaded successfully:", sound);
       soundRef.current = sound; // Stocke le son dans la référence
       setIsSoundLoaded(true);
       await sound.playAsync(); // Lit le son en boucle
@@ -44,17 +43,17 @@ const Candidate = ({
 
   // useEffect pour charger l'audio à la création du composant
   useEffect(() => {
-    console.log("Executing useEffect to load audio");
     loadAudio();
 
     return () => {
       if (soundRef.current) {
         console.log("Stopping and unloading sound...");
-        soundRef.current.stopAsync(); // Arrête la lecture du son lorsque le composant est démonté
-        soundRef.current.unloadAsync(); // Décharge le son pour nettoyer les ressources
+        soundRef.current.stopAsync(); 
+        soundRef.current.unloadAsync(); 
       }
     };
   }, [audioProfile]);
+ 
 
   // useEffect pour rejouer le son une fois qu'il est chargé
   useEffect(() => {
@@ -148,6 +147,14 @@ const Candidate = ({
       </View>
     );
   }, [likeOpacity, nopeOpacity]);
+
+  // if (!soundRef.current) {
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+  //       <ActivityIndicator size="large" color="white" />
+  //     </View>
+  //   );
+  // }
 
   // Chargement de la police
   const [fontsLoaded] = useFonts({
