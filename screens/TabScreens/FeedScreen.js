@@ -25,6 +25,7 @@ import {
 const { height } = Dimensions.get("screen");
 
 const FeedScreen = () => {
+  
   //Valeur de l'id
   const [id, setId] = useState(null);
 

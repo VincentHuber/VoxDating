@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/core";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   Text,
@@ -11,6 +11,9 @@ import {
 import { auth } from "../../firebase";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "../../firebase";
 
 import {
   useFonts,
@@ -26,11 +29,54 @@ import {
 } from "@expo-google-fonts/lexend";
 
 const ProfilScreen = () => {
+  //Valeur de l'id
+  const [id, setId] = useState(null);
+
+  const [user, setUser] = useState(null);
 
   const navigation = useNavigation();
 
   const windowHeight = useWindowDimensions().height;
 
+  //Récupère l'id dans l'AsyncStorage
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        let userData = await AsyncStorage.getItem("@user");
+        if (userData !== null) {
+          userData = JSON.parse(userData);
+          setId(userData.uid);
+        }
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des données utilisateur :",
+          error
+        );
+      }
+    };
+    fetchToken();
+  }, []);
+
+  //Fonction pour récupérer les infos de l'user
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        if (id) {
+          const userDoc = await getDoc(doc(db, "users", id));
+
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setUser(userData);
+          }
+        }
+      } catch (error) {
+        console.log("error fetching user : ", error);
+      }
+    };
+    fetchUser();
+  }, [id]);
+
+  //Calcul de la hauteur de la fenêtre
   const smallScreen = 700;
   let paddingBottomFactor;
 
@@ -42,7 +88,7 @@ const ProfilScreen = () => {
 
   const paddingBottom = windowHeight * paddingBottomFactor;
 
-
+  // Fonction pour se déconnecter
   const handleSignOut = () => {
     auth
       .signOut()
@@ -78,28 +124,27 @@ const ProfilScreen = () => {
         backgroundColor: "black",
       }}
     >
-      <ScrollView 
-      contentContainerStyle={{
-        justifyContent: "center",
-        paddingBottom: paddingBottom,
-        alignItems: "center",}}
-      style={{ 
-        flex: 1,
-        width: "100%",
-
-        }}>
+      <ScrollView
+        contentContainerStyle={{
+          justifyContent: "center",
+          paddingBottom: paddingBottom,
+          alignItems: "center",
+        }}
+        style={{
+          flex: 1,
+          width: "100%",
+        }}
+      >
         <Text
           style={{
             fontFamily: "Lexend_900Black",
             fontSize: 34,
             color: "white",
-            marginTop:10,
+            marginTop: 10,
           }}
         >
           PROFIL
         </Text>
-
-        {/* <Text style={{fontFamily:"Lexend_400Regular", color: "white" }}>Email: {auth.currentUser?.email}</Text> */}
 
         <View
           style={{
@@ -111,188 +156,230 @@ const ProfilScreen = () => {
             alignItems: "center",
           }}
         >
-          <TouchableOpacity
-            style={{
-              width: "100%",
-              height: 54,
-              paddingRight:8,
-              paddingLeft:23,
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                color: "#989898",
-                fontFamily: "Lexend_400Regular",
-                fontSize: 16,
-              }}
-            >
-              Pseudo
-            </Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text
+          {user ? (
+            <>
+              <TouchableOpacity
                 style={{
-                  color: "white",
-                  fontFamily: "Lexend_600SemiBold",
-                  fontSize: 16,
-                  marginRight: 5,
+                  width: "100%",
+                  height: 54,
+                  paddingRight: 8,
+                  paddingLeft: 23,
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                Jean
-              </Text>
-              <MaterialIcons name="navigate-next" size={26} color="#989898" />
-            </View>
-          </TouchableOpacity>
+                <Text
+                  style={{
+                    color: "#989898",
+                    fontFamily: "Lexend_400Regular",
+                    fontSize: 16,
+                  }}
+                >
+                  Pseudo
+                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    style={{
+                      color: "white",
+                      fontFamily: "Lexend_600SemiBold",
+                      fontSize: 16,
+                      marginRight: 5,
+                    }}
+                  >
+                    {user.username && user.username.length > 12
+                      ? user.username.substring(0, 12) + "..."
+                      : user.username}
+                  </Text>
+                  <MaterialIcons
+                    name="navigate-next"
+                    size={26}
+                    color="#989898"
+                  />
+                </View>
+              </TouchableOpacity>
 
-          <View style={{height:1, width:"100%", backgroundColor:"black"}} />
+              <View
+                style={{ height: 1, width: "100%", backgroundColor: "black" }}
+              />
 
-          <TouchableOpacity
-            style={{
-              width: "100%",
-              height: 54,
-              paddingRight:8,
-              paddingLeft:23,
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                color: "#989898",
-                fontFamily: "Lexend_400Regular",
-                fontSize: 16,
-              }}
-            >
-              Âge
-            </Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text
+              <TouchableOpacity
                 style={{
-                  color: "white",
-                  fontFamily: "Lexend_600SemiBold",
-                  fontSize: 16,
-                  marginRight: 5,
+                  width: "100%",
+                  height: 54,
+                  paddingRight: 8,
+                  paddingLeft: 23,
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                45
-              </Text>
-              <MaterialIcons name="navigate-next" size={26} color="#989898" />
-            </View>
-          </TouchableOpacity>
+                <Text
+                  style={{
+                    color: "#989898",
+                    fontFamily: "Lexend_400Regular",
+                    fontSize: 16,
+                  }}
+                >
+                  Âge
+                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    style={{
+                      color: "white",
+                      fontFamily: "Lexend_600SemiBold",
+                      fontSize: 16,
+                      marginRight: 5,
+                    }}
+                  >
+                    {user.age}
+                  </Text>
+                  <MaterialIcons
+                    name="navigate-next"
+                    size={26}
+                    color="#989898"
+                  />
+                </View>
+              </TouchableOpacity>
 
-          <View style={{height:1, width:"100%", backgroundColor:"black"}} />
+              <View
+                style={{ height: 1, width: "100%", backgroundColor: "black" }}
+              />
 
-          <TouchableOpacity
-            style={{
-              width: "100%",
-              height: 54,
-              paddingRight:8,
-              paddingLeft:23,
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                color: "#989898",
-                fontFamily: "Lexend_400Regular",
-                fontSize: 16,
-              }}
-            >
-              Localisation
-            </Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text
+              <TouchableOpacity
                 style={{
-                  color: "white",
-                  fontFamily: "Lexend_600SemiBold",
-                  fontSize: 16,
-                  marginRight: 5,
+                  width: "100%",
+                  height: 54,
+                  paddingRight: 8,
+                  paddingLeft: 23,
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                14 av...
-              </Text>
-              <MaterialIcons name="navigate-next" size={26} color="#989898" />
-            </View>
-          </TouchableOpacity>
+                <Text
+                  style={{
+                    color: "#989898",
+                    fontFamily: "Lexend_400Regular",
+                    fontSize: 16,
+                  }}
+                >
+                  Localisation
+                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    style={{
+                      color: "white",
+                      fontFamily: "Lexend_600SemiBold",
+                      fontSize: 16,
+                      marginRight: 5,
+                    }}
+                  >
+                    {user.locationWriten && user.locationWriten.length > 12
+                      ? user.locationWriten.substring(0, 12) + "..."
+                      : user.locationWriten}
+                  </Text>
+                  <MaterialIcons
+                    name="navigate-next"
+                    size={26}
+                    color="#989898"
+                  />
+                </View>
+              </TouchableOpacity>
 
-          <View style={{height:1, width:"100%", backgroundColor:"black"}} />
+              <View
+                style={{ height: 1, width: "100%", backgroundColor: "black" }}
+              />
 
-          <TouchableOpacity
-            style={{
-              width: "100%",
-              paddingRight:8,
-              paddingLeft:23,
-              height: 54,
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                color: "#989898",
-                fontFamily: "Lexend_400Regular",
-                fontSize: 16,
-              }}
-            >
-              Genre
-            </Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text
+              <TouchableOpacity
                 style={{
-                  color: "white",
-                  fontFamily: "Lexend_600SemiBold",
-                  fontSize: 16,
-                  marginRight: 5,
+                  width: "100%",
+                  paddingRight: 8,
+                  paddingLeft: 23,
+                  height: 54,
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                Homme
-              </Text>
-              <MaterialIcons name="navigate-next" size={26} color="#989898" />
-            </View>
-          </TouchableOpacity>
+                <Text
+                  style={{
+                    color: "#989898",
+                    fontFamily: "Lexend_400Regular",
+                    fontSize: 16,
+                  }}
+                >
+                  Genre
+                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    style={{
+                      color: "white",
+                      fontFamily: "Lexend_600SemiBold",
+                      fontSize: 16,
+                      marginRight: 5,
+                    }}
+                  >
+                    {user.gender}
+                  </Text>
+                  <MaterialIcons
+                    name="navigate-next"
+                    size={26}
+                    color="#989898"
+                  />
+                </View>
+              </TouchableOpacity>
 
-          <View style={{height:1, width:"100%", backgroundColor:"black"}} />
+              <View
+                style={{ height: 1, width: "100%", backgroundColor: "black" }}
+              />
 
-          <TouchableOpacity
-            style={{
-              width: "100%",
-              paddingRight:8,
-              paddingLeft:23,
-              height: 54,
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                color: "#989898",
-                fontFamily: "Lexend_400Regular",
-                fontSize: 16,
-              }}
-            >
-              Genre souhaité
-            </Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text
+              <TouchableOpacity
                 style={{
-                  color: "white",
-                  fontFamily: "Lexend_600SemiBold",
-                  fontSize: 16,
-                  marginRight: 5,
+                  width: "100%",
+                  paddingRight: 8,
+                  paddingLeft: 23,
+                  height: 54,
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                Femme
-              </Text>
-              <MaterialIcons name="navigate-next" size={26} color="#989898" />
-            </View>
-          </TouchableOpacity>
+                <Text
+                  style={{
+                    color: "#989898",
+                    fontFamily: "Lexend_400Regular",
+                    fontSize: 16,
+                  }}
+                >
+                  Genre souhaité
+                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    style={{
+                      color: "white",
+                      fontFamily: "Lexend_600SemiBold",
+                      fontSize: 16,
+                      marginRight: 5,
+                    }}
+                  >
+                    {user.wishedGender && user.wishedGender.length > 1
+                      ? user.wishedGender + "..."
+                      : user.wishedGender}
+                  </Text>
+                  <MaterialIcons
+                    name="navigate-next"
+                    size={26}
+                    color="#989898"
+                  />
+                </View>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <Text style={{ color: "white" }}>
+              Chargement des données utilisateur...
+            </Text>
+          )}
         </View>
 
         <View
@@ -340,81 +427,89 @@ const ProfilScreen = () => {
             alignItems: "center",
           }}
         >
-          <TouchableOpacity
-            style={{
-              width: "100%",
-              paddingRight:8,
-              paddingLeft:23,
-              height: 54,
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                color: "#989898",
-                fontFamily: "Lexend_400Regular",
-                fontSize: 16,
-              }}
-            >
-              Mail
-            </Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text
+          {user ? (
+            <>
+              <TouchableOpacity
                 style={{
-                  color: "white",
-                  fontFamily: "Lexend_600SemiBold",
-                  fontSize: 16,
-                  marginRight: 5,
+                  width: "100%",
+                  paddingRight: 8,
+                  paddingLeft: 23,
+                  height: 54,
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                jean@live.fr
-              </Text>
-              <MaterialIcons name="navigate-next" size={26} color="#989898" />
-            </View>
-          </TouchableOpacity>
+                <Text
+                  style={{
+                    color: "#989898",
+                    fontFamily: "Lexend_400Regular",
+                    fontSize: 16,
+                  }}
+                >
+                  Mail
+                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    style={{
+                      color: "white",
+                      fontFamily: "Lexend_600SemiBold",
+                      fontSize: 16,
+                      marginRight: 5,
+                    }}
+                  >
+                    {user.email && user.email.length > 20
+                      ? user.email.substring(0, 20) + "..."
+                      : user.email}
+                  </Text>
+                  <MaterialIcons
+                    name="navigate-next"
+                    size={26}
+                    color="#989898"
+                  />
+                </View>
+              </TouchableOpacity>
 
-          <View style={{height:1, width:"100%", backgroundColor:"black"}} />
+              <View
+                style={{ height: 1, width: "100%", backgroundColor: "black" }}
+              />
 
-          <TouchableOpacity
-            style={{
-              width: "100%",
-              paddingRight:8,
-              paddingLeft:23,
-              height: 54,
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                color: "#989898",
-                fontFamily: "Lexend_400Regular",
-                fontSize: 16,
-              }}
-            >
-              Mot de passe
-            </Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text
+              <TouchableOpacity
                 style={{
-                  color: "white",
-                  fontFamily: "Lexend_600SemiBold",
-                  fontSize: 16,
-                  marginRight: 5,
+                  width: "100%",
+                  paddingRight: 8,
+                  paddingLeft: 23,
+                  height: 54,
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                *******
-              </Text>
-              <MaterialIcons name="navigate-next" size={26} color="#989898" />
-            </View>
-          </TouchableOpacity>
+                <Text
+                  style={{
+                    color: "#989898",
+                    fontFamily: "Lexend_400Regular",
+                    fontSize: 16,
+                  }}
+                >
+                  Mot de passe
+                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
 
-               
+                  <MaterialIcons
+                    name="navigate-next"
+                    size={26}
+                    color="#989898"
+                  />
+                </View>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <Text style={{ color: "white" }}>
+              Chargement des données utilisateur...
+            </Text>
+          )}
         </View>
-        
 
         <TouchableOpacity
           style={{
@@ -446,8 +541,8 @@ const ProfilScreen = () => {
             height: 54,
             borderRadius: 10,
             justifyContent: "center",
-            borderWidth:1,
-            borderColor:"white",
+            borderWidth: 1,
+            borderColor: "white",
             alignItems: "center",
             marginTop: 10,
           }}
@@ -463,22 +558,22 @@ const ProfilScreen = () => {
           </Text>
         </TouchableOpacity>
       </ScrollView>
-        <LinearGradient
-          colors={[
-            "rgba(0,0,0,0)",
-            "rgba(0,0,0,0.8)",
-            "rgba(0,0,0,0.9)",
-            "black",
-          ]}
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: 110,
-            zIndex: 2,
-          }}
-        />
+      <LinearGradient
+        colors={[
+          "rgba(0,0,0,0)",
+          "rgba(0,0,0,0.8)",
+          "rgba(0,0,0,0.9)",
+          "black",
+        ]}
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: 110,
+          zIndex: 2,
+        }}
+      />
     </SafeAreaView>
   );
 };

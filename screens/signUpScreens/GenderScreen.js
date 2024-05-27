@@ -52,7 +52,7 @@ export default function GenderScreen({ navigation }) {
   // MAJ du gender man + navigation
   const manClick = async () => {
 
-    let gender = "man"
+    let gender = "Homme"
 
     if (id) {
       await updateDoc(doc(db, "users", id), {
@@ -72,7 +72,7 @@ export default function GenderScreen({ navigation }) {
   // MAJ du gender woman + navigation
   const womanClick = async () => {
 
-    let gender = "woman"
+    let gender = "Femme"
 
     if (id) {
       await updateDoc(doc(db, "users", id), {
@@ -92,7 +92,7 @@ export default function GenderScreen({ navigation }) {
  // MAJ du gender other + navigation
  const otherClick = async () => {
 
-  let gender = "other"
+  let gender = "Autre"
 
   if (id) {
     await updateDoc(doc(db, "users", id), {

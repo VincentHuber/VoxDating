@@ -69,9 +69,9 @@ export default function WishedGenderScreen({ navigation }) {
     setManIsClicked(!manIsClicked);
   
     if (!manIsClicked) {
-      setGender(prevGender => [...prevGender, "man"]);
+      setGender(prevGender => [...prevGender, "Homme"]);
     } else {
-      setGender(prevGender => prevGender.filter(item => item !== "man"));
+      setGender(prevGender => prevGender.filter(item => item !== "Homme"));
     }
   };
   
@@ -82,9 +82,9 @@ export default function WishedGenderScreen({ navigation }) {
     setWomanIsClicked(!womanIsClicked)
 
     if(!womanIsClicked){
-      setGender(prevGender =>[...prevGender, "woman"])
+      setGender(prevGender =>[...prevGender, "Femme"])
     } else{
-      setGender(prevGender => prevGender.filter(item => item !== "woman"))
+      setGender(prevGender => prevGender.filter(item => item !== "Femme"))
     }
   }
 
@@ -95,9 +95,9 @@ export default function WishedGenderScreen({ navigation }) {
     setOtherIsClicked(!otherIsClicked)
 
     if(!otherIsClicked){
-      setGender(prevGender =>[...prevGender, "other"])
+      setGender(prevGender =>[...prevGender, "Autre"])
     } else{
-      setGender(prevGender => prevGender.filter(item => item !== "other"))
+      setGender(prevGender => prevGender.filter(item => item !== "Autre"))
     }
   }
   

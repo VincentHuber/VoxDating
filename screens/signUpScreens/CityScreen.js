@@ -84,6 +84,7 @@ export default function CityScreen({ navigation }) {
         if (id) {
           await updateDoc(doc(db, "users", id), {
             location: { lat, lng },
+            locationWriten : location
           });
           navigation.navigate("Audio")
         } else {
