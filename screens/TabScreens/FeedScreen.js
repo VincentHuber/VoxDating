@@ -247,7 +247,7 @@ useEffect(() => {
           />
         )}
       </Animated.View>
-      <Footer handleChoice={handleChoice} />
+      {/* <Footer handleChoice={handleChoice} /> */}
     </SafeAreaView>
   );
 };

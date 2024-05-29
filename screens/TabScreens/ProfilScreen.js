@@ -367,7 +367,7 @@ const ProfilScreen = () => {
                     }}
                   >
                     {user.wishedGender && user.wishedGender.length > 1
-                      ? user.wishedGender + "..."
+                      ? user.wishedGender[0] + "..."
                       : user.wishedGender}
                   </Text>
                   <MaterialIcons

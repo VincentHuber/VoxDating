@@ -1,7 +1,8 @@
-import { Text, Animated, View, TouchableWithoutFeedback, ActivityIndicator } from "react-native";
+import { Text, Animated, View, TouchableWithoutFeedback } from "react-native";
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import Choice from "./Choice";
 import { Audio } from "expo-av";
+import AudioVisualisation from "./AudioVisualisation";
 
 import {
   useFonts,
@@ -27,7 +28,7 @@ const Candidate = ({
   const soundRef = useRef(null);
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
   const [play, setPlay] = useState(false);
-  const [tabPlay, setTabPlay] = useState(true)
+  const [tabPlay, setTabPlay] = useState(true);
 
   // Fonction pour charger et lire l'audio
   const loadAudio = async () => {
@@ -48,12 +49,11 @@ const Candidate = ({
     return () => {
       if (soundRef.current) {
         console.log("Stopping and unloading sound...");
-        soundRef.current.stopAsync(); 
-        soundRef.current.unloadAsync(); 
+        soundRef.current.stopAsync();
+        soundRef.current.unloadAsync();
       }
     };
   }, [audioProfile]);
- 
 
   // useEffect pour rejouer le son une fois qu'il est chargé
   useEffect(() => {
@@ -80,8 +80,8 @@ const Candidate = ({
     }
   }
 
-   // Fonction pour mettre en pause ou lire l'audio au clic sur le tab
-   async function pauseTabRecording() {
+  // Fonction pour mettre en pause ou lire l'audio au clic sur le tab
+  async function pauseTabRecording() {
     if (tabPlay) {
       await soundRef.current.pauseAsync();
     } else {
@@ -148,14 +148,6 @@ const Candidate = ({
     );
   }, [likeOpacity, nopeOpacity]);
 
-  // if (!soundRef.current) {
-  //   return (
-  //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  //       <ActivityIndicator size="large" color="white" />
-  //     </View>
-  //   );
-  // }
-
   // Chargement de la police
   const [fontsLoaded] = useFonts({
     Lexend_900Black,
@@ -195,6 +187,7 @@ const Candidate = ({
             alignItems: "center",
           }}
         >
+          
           <Text
             style={{
               marginTop: 50,
@@ -209,7 +202,10 @@ const Candidate = ({
             {username}
           </Text>
 
-          <Text
+          <View style={{ position: "absolute", width: "100%", height: "100%", zIndex:-5 }}>
+            <AudioVisualisation />
+          </View>
+          {/* <Text
             style={{
               color: "white",
               marginTop: 200,
@@ -219,7 +215,7 @@ const Candidate = ({
             }}
           >
             {audioProfile}
-          </Text>
+          </Text> */}
 
           {isFirst && renderChoice()}
         </View>

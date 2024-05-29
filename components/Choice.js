@@ -47,7 +47,7 @@ const Choice = ({ name, type }) => {
 
   return (
     <View style={{justifyContent:"center", alignItems:"center"}}>
-      <FontAwesome name= {name} size={40} color={color} />
+      <FontAwesome name= {name} size={40} color="black" />
     </View>
   );
 };
