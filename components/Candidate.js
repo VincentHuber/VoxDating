@@ -42,9 +42,6 @@ const Candidate = ({
     }
   };
 
-  // useEffect pour charger l'audio à la création du composant
-  useEffect(() => {
-    loadAudio();
 
     return () => {
       if (soundRef.current) {
