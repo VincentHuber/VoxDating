@@ -80,7 +80,7 @@ export default function AudioScreen({ navigation }) {
         });
 
         const { recording } = await Audio.Recording.createAsync(
-          Audio.RecordingOptionsPresets.HIGH_QUALITY
+          Audio.RecordingOptionsPresets.HIGH_QUALITY,
         );
         setRecordingInProgress(recording);
       }

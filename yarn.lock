@@ -2338,6 +2338,17 @@
     suspend-react "^0.1.3"
     zustand "^3.7.1"
 
+"@react-three/postprocessing@^2.16.2":
+  version "2.16.2"
+  resolved "https://registry.yarnpkg.com/@react-three/postprocessing/-/postprocessing-2.16.2.tgz#a6ed5aa0775d843eba845915c41160ce7fff3e79"
+  integrity sha512-2ya1gXLDpzyfbELobi3rPHNNZZCrCfyq20GMYJD1yD7ZyBFSpRG9YSPMBnOal6A89kXanPBw273h6/Dqev0n7g==
+  dependencies:
+    buffer "^6.0.3"
+    maath "^0.6.0"
+    n8ao "^1.6.6"
+    postprocessing "^6.32.1"
+    three-stdlib "^2.23.4"
+
 "@rnx-kit/chromium-edge-launcher@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@rnx-kit/chromium-edge-launcher/-/chromium-edge-launcher-1.0.0.tgz#c0df8ea00a902c7a417cd9655aab06de398b939c"
@@ -2766,6 +2777,13 @@ async-limiter@~1.0.0:
   resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.1.tgz#dd379e94f0db8310b08291f9d64c3209766617fd"
   integrity sha512-csOlWGAcRFJaI6m+F2WKdnMKr4HhdhFVBk0H/QbJFMCr+uO2kwohwXQPxw/9OCxp05r5ghVBFSyioixx3gfkNQ==
 
+async@^2.0.0:
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/async/-/async-2.6.4.tgz#706b7ff6084664cd7eae713f6f965433b5504221"
+  integrity sha512-mzo5dfJYwAn29PeiJ0zvwTo04zj8HDJj0Mn8TD7sno7q12prdbnasKJHhkm2c1LgrhlJ0teaea8860oxi51mGA==
+  dependencies:
+    lodash "^4.17.14"
+
 asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
@@ -2775,6 +2793,11 @@ at-least-node@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
   integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
+
+atob@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
+  integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
 available-typed-arrays@^1.0.7:
   version "1.0.7"
@@ -3851,6 +3874,11 @@ event-target-shim@^5.0.0, event-target-shim@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/event-target-shim/-/event-target-shim-5.0.1.tgz#5d4d3ebdf9583d63a5333ce2deb7480ab2b05789"
   integrity sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==
+
+eventemitter3@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
+  integrity sha512-DOFqA1MF46fmZl2xtzXR3MPCRsXqgoFqdXcrCVYM3JNnfUeHTm/fh/v/iU7gBFpwkuBmoJPAm5GuhdDfSEJMJA==
 
 exec-async@^2.2.0:
   version "2.2.0"
@@ -5349,7 +5377,7 @@ lodash.throttle@^4.1.1:
   resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
   integrity sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==
 
-lodash@^4.17.13, lodash@^4.17.21:
+lodash@^4.13.1, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -5413,6 +5441,11 @@ maath@^0.10.7:
   version "0.10.7"
   resolved "https://registry.yarnpkg.com/maath/-/maath-0.10.7.tgz#9289b42a5db8ac5b26407b3bfca4e3bebefe50b4"
   integrity sha512-zQ2xd7dNOIVTjAS+hj22fyj1EFYmOJX6tzKjZ92r6WDoq8hyFxjuGA2q950tmR4iC/EKXoMQdSipkaJVuUHDTg==
+
+maath@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/maath/-/maath-0.6.0.tgz#7841d0fb95bbb37d19b08b7c5458ef70190950d2"
+  integrity sha512-dSb2xQuP7vDnaYqfoKzlApeRcR2xtN8/f7WV/TMAkBC8552TwTLtOO0JTcSygkYMjNDPoo6V01jTw/aPi4JrMw==
 
 make-dir@^2.0.0, make-dir@^2.1.0:
   version "2.1.0"
@@ -5839,6 +5872,11 @@ mz@^2.7.0:
     any-promise "^1.0.0"
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
+
+n8ao@^1.6.6:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/n8ao/-/n8ao-1.8.2.tgz#aee5689ef195f4752b97a5be82462bc02e0c0288"
+  integrity sha512-bJLtqdQxtjBeoT6RozfNfTd6LNRfz/UpTRVRltwsnz8O0chnT8dN2l8FdSYicJZ5HPNFNXEwi3juNVOUybL+bw==
 
 nanoid@^3.1.23, nanoid@^3.3.1, nanoid@^3.3.7:
   version "3.3.7"
@@ -6290,6 +6328,11 @@ postcss@~8.4.32:
     picocolors "^1.0.0"
     source-map-js "^1.2.0"
 
+postprocessing@^6.32.1:
+  version "6.35.4"
+  resolved "https://registry.yarnpkg.com/postprocessing/-/postprocessing-6.35.4.tgz#51040e0d5cd4614d4f2fca1606911573c150ca5a"
+  integrity sha512-U4Uk+wOHRbdlMV8zhn843K3bZyiWGKnWXWSsDXa8IW6NAiAP/YJtf6DHs4UFo1gLnNnRGpgJPc2Xxai9O/HoLg==
+
 potpack@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/potpack/-/potpack-1.0.2.tgz#23b99e64eb74f5741ffe7656b5b5c4ddce8dfc14"
@@ -6486,6 +6529,20 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
+react-native-audio-toolkit@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-audio-toolkit/-/react-native-audio-toolkit-1.0.6.tgz#4eff06667c0d00ddad23f88facfcecf26cdd083b"
+  integrity sha512-3JUkkwLLFvyzUNRRLqncwF/wFLwvvtxdw1qPSHiQL0SS8nk7RWOErRDsoMD27Aid8rs0dAQ+SDh5et7AmS6f8w==
+  dependencies:
+    async "^2.0.0"
+    eventemitter3 "^1.2.0"
+    lodash "^4.13.1"
+
+react-native-clean-project@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-clean-project/-/react-native-clean-project-4.0.3.tgz#7ea174d2cb789e0c1d24defbeba561fcbf1beb9e"
+  integrity sha512-tWNhac5R4BetY7sZSRgaWUDSMpT207nJRuUwMZInmYJR3HucMZGIIUaiDH/pbFxXSDq4GMj4P7FnHxGLDobJ8w==
+
 react-native-gesture-handler@^2.16.2:
   version "2.16.2"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.16.2.tgz#032bd2a07334292d7f6cff1dc9d1ec928f72e26d"
@@ -6496,6 +6553,13 @@ react-native-gesture-handler@^2.16.2:
     invariant "^2.2.4"
     lodash "^4.17.21"
     prop-types "^15.7.2"
+
+react-native-live-audio-fft@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-live-audio-fft/-/react-native-live-audio-fft-1.3.0.tgz#f013b9cc1c475a73d00b891804a90a83b5db2750"
+  integrity sha512-ZqWRPzgu9F4m2dlwsUzUy2jCvx4OGr2U3362UxPYPe6kkzTk0vdA6OgoAX67IfBiuIiiVe/ClWiP+xrHvp/HGA==
+  dependencies:
+    atob "2.1.2"
 
 react-native-reanimated@~3.10.1:
   version "3.10.1"
@@ -7443,6 +7507,18 @@ three-mesh-bvh@^0.7.0:
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.7.4.tgz#a5c799856a3f26f73537a73b6ec632c30f712ba8"
   integrity sha512-flxe0A4uflTPR6elgq/Y8VrLoljDNS899i422SxQcU3EtMj6o8z4kZRyqZqGWzR0qMf1InTZzY1/0xZl/rnvVw==
+
+three-stdlib@^2.23.4:
+  version "2.30.2"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.30.2.tgz#6b669f62dd0e11c4d237c51efe89ed3a878de199"
+  integrity sha512-R4HRbSRfTwEIJPAybj3XnunXF0esGiCTol8p7n0hxKX0x6Ta44ESPHKoQn/uvZmgPNrtNxLsH3YWjywyF6Z2Mw==
+  dependencies:
+    "@types/draco3d" "^1.4.0"
+    "@types/offscreencanvas" "^2019.6.4"
+    "@types/webxr" "^0.5.2"
+    draco3d "^1.4.1"
+    fflate "^0.6.9"
+    potpack "^1.0.1"
 
 three-stdlib@^2.29.9:
   version "2.30.1"

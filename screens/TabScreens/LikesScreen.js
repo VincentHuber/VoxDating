@@ -6,7 +6,7 @@ import {
   ScrollView,
   useWindowDimensions,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -27,6 +27,7 @@ import { Dimensions } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 
 export default function LikesScreen() {
+
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = useWindowDimensions().height;
 

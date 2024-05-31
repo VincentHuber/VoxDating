@@ -30,6 +30,10 @@ const Candidate = ({
   const [play, setPlay] = useState(false);
   const [tabPlay, setTabPlay] = useState(true);
 
+  const [currentVolume, setCurrentVolume] = useState(0);
+  
+
+
   // Fonction pour charger et lire l'audio
   const loadAudio = async () => {
     try {
@@ -42,6 +46,10 @@ const Candidate = ({
     }
   };
 
+
+  // useEffect pour charger l'audio à la création du composant
+  useEffect(() => {
+    loadAudio();
 
     return () => {
       if (soundRef.current) {
@@ -77,6 +85,25 @@ const Candidate = ({
     }
   }
 
+//Trouver le volume du son
+  useEffect(() => {
+    const monitorVolume = async () => {
+      if (soundRef.current) {
+        const status = await soundRef.current.getStatusAsync();
+        if (status.isPlaying) {
+          setCurrentVolume(status.volume);
+        } else {
+          setCurrentVolume(0);
+        }
+      }
+    };
+
+    const interval = setInterval(monitorVolume, 500);
+
+    return () => clearInterval(interval);
+  }, [isSoundLoaded]);
+
+
   // Fonction pour mettre en pause ou lire l'audio au clic sur le tab
   async function pauseTabRecording() {
     if (tabPlay) {
@@ -85,6 +112,22 @@ const Candidate = ({
       await soundRef.current.replayAsync({ isLooping: true });
     }
   }
+
+  //   //Fontion pour mettre en pause au click sur une tab.screen
+  //   useEffect(() => {
+  //   const handlePlayPause = async () => {
+  //     if (soundRef.current) {
+  //       console.log("isPlaying :", isPlaying)
+  //       if (isPlaying) {
+  //         await soundRef.current.playAsync();
+  //       } else {
+  //         await soundRef.current.pauseAsync();
+  //       }
+  //     }
+  //   };
+  //   handlePlayPause();
+  // }, [isPlaying]);
+
 
   // Définition de l'animation de rotation
   const rotate = Animated.multiply(swipe.x, titlSign).interpolate({
@@ -200,19 +243,8 @@ const Candidate = ({
           </Text>
 
           <View style={{ position: "absolute", width: "100%", height: "100%", zIndex:-5 }}>
-            <AudioVisualisation />
+            <AudioVisualisation currentVolume ={currentVolume}/>
           </View>
-          {/* <Text
-            style={{
-              color: "white",
-              marginTop: 200,
-              fontSize: 10,
-              width: 200,
-              textAlign: "center",
-            }}
-          >
-            {audioProfile}
-          </Text> */}
 
           {isFirst && renderChoice()}
         </View>

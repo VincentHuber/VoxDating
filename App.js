@@ -20,6 +20,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { BlurView } from "expo-blur";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+
 import {
   useFonts,
   Lexend_900Black,
@@ -203,9 +204,11 @@ const TabNavigator = () => {
                 backgroundColor: focused ? "white" : "",
               }}
             >
-              <FontAwesome5
-                name="user"
-                size={30}
+
+
+              <Ionicons
+                name="settings-outline"
+                size={32}
                 color={focused ? "black" : "white"}
               />
 
