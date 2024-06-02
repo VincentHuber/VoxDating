@@ -3,6 +3,9 @@ import React, { useCallback, useEffect, useState, useRef } from "react";
 import Choice from "./Choice";
 import { Audio } from "expo-av";
 import AudioVisualisation from "./AudioVisualisation";
+import {useSelector, useDispatch} from 'react-redux'
+import { audioPause } from "../reducers/pause";
+
 
 import {
   useFonts,
@@ -31,16 +34,30 @@ const Candidate = ({
   const [tabPlay, setTabPlay] = useState(true);
 
   const [currentVolume, setCurrentVolume] = useState(0);
-  
 
+  const pause = useSelector((state)=>state.pause.value)
+  console.log('pause :', pause)
+
+  const dispatch = useDispatch()
+
+
+  useEffect(()=>{
+    dispatch(audioPause(false))
+  },[audioPause, dispatch])
 
   // Fonction pour charger et lire l'audio
   const loadAudio = async () => {
     try {
+
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+      });
+
       const { sound } = await Audio.Sound.createAsync({ uri: audioProfile }); // Charge le son depuis l'URI
       soundRef.current = sound; // Stocke le son dans la référence
       setIsSoundLoaded(true);
-      await sound.playAsync(); // Lit le son en boucle
+      await sound.playAsync(); 
     } catch (error) {
       console.error("Error loading audio:", error);
     }
@@ -65,6 +82,10 @@ const Candidate = ({
     if (soundRef.current && isSoundLoaded) {
       const replaySound = async () => {
         try {
+          await Audio.setAudioModeAsync({
+            allowsRecordingIOS: false,
+            playsInSilentModeIOS: true,
+          });
           console.log("Replaying sound...");
           await soundRef.current.replayAsync({ isLooping: true });
         } catch (error) {
@@ -113,20 +134,20 @@ const Candidate = ({
     }
   }
 
-  //   //Fontion pour mettre en pause au click sur une tab.screen
-  //   useEffect(() => {
-  //   const handlePlayPause = async () => {
-  //     if (soundRef.current) {
-  //       console.log("isPlaying :", isPlaying)
-  //       if (isPlaying) {
-  //         await soundRef.current.playAsync();
-  //       } else {
-  //         await soundRef.current.pauseAsync();
-  //       }
-  //     }
-  //   };
-  //   handlePlayPause();
-  // }, [isPlaying]);
+   //Fontion pour mettre en pause au click sur une tab.screen
+    useEffect(() => {
+    const handlePlayPause = async () => {
+      if (soundRef.current) {
+        if (pause) {
+          await soundRef.current.pauseAsync();
+
+        } else {
+          await soundRef.current.playAsync();
+        }
+      }
+    };
+    handlePlayPause();
+  }, [pause]);
 
 
   // Définition de l'animation de rotation

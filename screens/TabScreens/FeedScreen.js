@@ -5,7 +5,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { db } from "../../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import Candidate from "../../components/Candidate";
-import Footer from "../../components/Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getDoc, doc } from "firebase/firestore";
 

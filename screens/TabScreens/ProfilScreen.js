@@ -14,6 +14,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase";
+import {useDispatch} from 'react-redux'
+import {audioPause} from "../../reducers/pause";
 
 import {
   useFonts,
@@ -34,9 +36,16 @@ const ProfilScreen = () => {
 
   const [user, setUser] = useState(null);
 
+  const dispatch = useDispatch()
+
   const navigation = useNavigation();
 
   const windowHeight = useWindowDimensions().height;
+
+
+  useEffect(()=>{
+    dispatch(audioPause(true))
+  },[])
 
   //Récupère l'id dans l'AsyncStorage
   useEffect(() => {

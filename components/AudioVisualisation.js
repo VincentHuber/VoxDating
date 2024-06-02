@@ -12,12 +12,10 @@ export default function AudioVisualisation({ currentVolume }) {
   return (
     <Canvas>
       <color attach="background" args={['black']} />
-      <ambientLight intensity={0.0} />
       <directionalLight intensity={1.5} position={[0, 0, 50]} />
 
       <mesh position={[0, 0, 1]}>
         <sphereGeometry args={[0.9, 70, 70]} />
-        <meshBasicMaterial wireframe={true} />
         <AnimatedMeshDistortMaterial
           speed={4}
           distort={distort}

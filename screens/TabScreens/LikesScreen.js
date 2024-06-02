@@ -6,9 +6,11 @@ import {
   ScrollView,
   useWindowDimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
+import {useDispatch} from 'react-redux'
+import {audioPause} from "../../reducers/pause";
 
 import {
   useFonts,
@@ -28,6 +30,8 @@ import { Entypo } from "@expo/vector-icons";
 
 export default function LikesScreen() {
 
+  const dispatch = useDispatch()
+
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = useWindowDimensions().height;
 
@@ -44,6 +48,13 @@ export default function LikesScreen() {
   }
 
   const paddingBottom = windowHeight * paddingBottomFactor;
+
+
+  useEffect(()=>{
+    dispatch(audioPause(true))
+  },[])
+
+
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({
@@ -286,7 +297,7 @@ export default function LikesScreen() {
                 alignItems: "center",
               }}
             >
-              <View style={{}}></View>
+              <View></View>
 
               <View>
                 <Text
@@ -463,240 +474,16 @@ export default function LikesScreen() {
       </TouchableOpacity>
 
       <LinearGradient
-        colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.6)", "black"]}
+        colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.7)", "black"]}
         style={{
           position: "absolute",
           left: 0,
           right: 0,
           bottom: 0,
-          height: 260,
+          height: 200,
           zIndex: 2,
         }}
       />
-
-      {/* <View
-        style={{
-          position:"absolute",
-          top:260,
-          width: "80%",
-          justifyContent: "space-around",
-          paddingTop: 40,
-          flexDirection: "row",
-          flexWrap: "wrap",
-          opacity: 0.5,
-        }}
-      >
-        <View style={{ marginBottom: 25 }}>
-          <TouchableOpacity
-            style={{
-              width: 120,
-              height: 120,
-              borderColor: "white",
-              borderRadius: 100,
-              borderWidth: 1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Image
-              width={120}
-              height={150}
-              source={require("../../assets/audio.png")}
-              style={{ width: "41%", height: "50%" }}
-            />
-          </TouchableOpacity>
-          <Text
-            style={{
-              marginTop: 10,
-
-              textAlign: "center",
-              fontFamily: "Lexend_400Regular",
-              fontSize: 18,
-              color: "white",
-            }}
-          >
-            SOPHIE
-          </Text>
-        </View>
-
-        <View>
-          <TouchableOpacity
-            style={{
-              width: 120,
-              height: 120,
-              borderColor: "white",
-              borderRadius: 100,
-              borderWidth: 1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Image
-              width={120}
-              height={150}
-              source={require("../../assets/audio.png")}
-              style={{ width: "41%", height: "50%" }}
-            />
-          </TouchableOpacity>
-          <Text
-            style={{
-              marginTop: 10,
-
-              textAlign: "center",
-              fontFamily: "Lexend_400Regular",
-              fontSize: 18,
-              color: "white",
-            }}
-          >
-            MARIE
-          </Text>
-        </View>
-
-        <View>
-          <TouchableOpacity
-            style={{
-              width: 120,
-              height: 120,
-              borderColor: "white",
-              borderRadius: 100,
-              borderWidth: 1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Image
-              width={120}
-              height={150}
-              source={require("../../assets/audio.png")}
-              style={{ width: "41%", height: "50%" }}
-            />
-          </TouchableOpacity>
-          <Text
-            style={{
-              marginTop: 10,
-
-              textAlign: "center",
-              fontFamily: "Lexend_400Regular",
-              fontSize: 18,
-              color: "white",
-            }}
-          >
-            ALEXANDRA
-          </Text>
-        </View>
-
-        <View style={{ marginBottom: 25 }}>
-          <TouchableOpacity
-            style={{
-              width: 120,
-              height: 120,
-              borderColor: "white",
-              borderRadius: 100,
-              borderWidth: 1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Image
-              width={120}
-              height={150}
-              source={require("../../assets/audio.png")}
-              style={{ width: "41%", height: "50%" }}
-            />
-          </TouchableOpacity>
-          <Text
-            style={{
-              marginTop: 10,
-
-              textAlign: "center",
-              fontFamily: "Lexend_400Regular",
-              fontSize: 18,
-              color: "white",
-            }}
-          >
-            JULIE
-          </Text>
-        </View>
-
-        <View>
-          <TouchableOpacity
-            style={{
-              width: 120,
-              height: 120,
-              borderColor: "white",
-              borderRadius: 100,
-              borderWidth: 1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Image
-              width={120}
-              height={150}
-              source={require("../../assets/audio.png")}
-              style={{ width: "41%", height: "50%" }}
-            />
-          </TouchableOpacity>
-          <Text
-            style={{
-              marginTop: 10,
-
-              textAlign: "center",
-              fontFamily: "Lexend_400Regular",
-              fontSize: 18,
-              color: "white",
-            }}
-          >
-            LOUISE
-          </Text>
-        </View>
-
-        <View>
-          <TouchableOpacity
-            style={{
-              width: 120,
-              height: 120,
-              borderColor: "white",
-              borderRadius: 100,
-              borderWidth: 1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Image
-              width={120}
-              height={150}
-              source={require("../../assets/audio.png")}
-              style={{ width: "41%", height: "50%" }}
-            />
-          </TouchableOpacity>
-          <Text
-            style={{
-              marginTop: 10,
-
-              textAlign: "center",
-              fontFamily: "Lexend_400Regular",
-              fontSize: 18,
-              color: "white",
-            }}
-          >
-            VICTOIRE
-          </Text>
-        </View>
-
-        <BlurView
-          intensity={15}
-          tint="dark"
-          style={{ 
-            position: "absolute", 
-            top: 0, 
-            bottom: 0, 
-            left: 0, 
-            right: 0, 
-            zIndex:1
-          }}
-        />
-      </View> */}
     </SafeAreaView>
   );
 }

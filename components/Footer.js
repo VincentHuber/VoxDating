@@ -2,11 +2,11 @@ import { View } from "react-native";
 import React from "react";
 import Button from "./Button";
 
-// const COLORS = {
-//   like: "#00eda6",
-//   nope: "#ff006f",
-//   star: "#07A6FF",
-// };
+const COLORS = {
+  like: "#00eda6",
+  nope: "#ff006f",
+  star: "#07A6FF",
+};
 
 const Footer = ({ handleChoice }) => {
   return (
@@ -24,18 +24,18 @@ const Footer = ({ handleChoice }) => {
       <Button
         name="times"
         size={24}
-        // color={COLORS.nope}
+        color={COLORS.nope}
         onPress={() => handleChoice(-1)}
       />
       <Button
         name="star"
         size={24}
-        // color={COLORS.star}
+        color={COLORS.star}
       />
       <Button
         name="heart"
         size={24}
-        // color={COLORS.like}
+        color={COLORS.like}
         onPress={() => handleChoice(1)}
       />
     </View>

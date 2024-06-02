@@ -2,8 +2,6 @@ import { View, Text } from "react-native";
 import React from "react";
 import { FontAwesome } from "@expo/vector-icons";
 
-
-
 import {
   useFonts,
   Lexend_900Black,
@@ -18,13 +16,12 @@ import {
 } from "@expo-google-fonts/lexend";
 
 const COLORS = {
-  like: "#00eda6",
-  nope: "#ff006f",
+  like: "#6A29FF",
+  nope: "#6A29FF",
 };
 
 const Choice = ({ name, type }) => {
-
-    const color = COLORS[type]
+  const color = COLORS[type];
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({
@@ -44,10 +41,14 @@ const Choice = ({ name, type }) => {
     return null;
   }
 
-
   return (
-    <View style={{justifyContent:"center", alignItems:"center"}}>
-      <FontAwesome name= {name} size={40} color="black" />
+    <View
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <FontAwesome name={name} size={45} color={color} />
     </View>
   );
 };
