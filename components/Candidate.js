@@ -6,7 +6,8 @@ import AudioVisualisation from "./AudioVisualisation";
 import { useSelector, useDispatch } from "react-redux";
 import { audioPause } from "../reducers/pause";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { updateDoc, doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 import {
   useFonts,
@@ -31,6 +32,8 @@ const Candidate = ({
   ...rest
 }) => {
   const soundRef = useRef(null);
+
+  const idRef = useRef(null);
 
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
 
@@ -65,6 +68,12 @@ const Candidate = ({
     };
     fetchToken();
   }, []);
+
+  useEffect(() => {
+    if (id !== null) {
+      idRef.current = id;
+    }
+  }, [id]);
 
   // Fonction pour activer l'audio de candidate
   useEffect(() => {
@@ -181,10 +190,39 @@ const Candidate = ({
 
     const swipeListener = swipe.x.addListener(({ value }) => {
       if (value > 100 && !likeSent) {
-        console.log("like :", usersId);
+        if (idRef.current) {
+          // Récupérer le document utilisateur actuel
+          const userDocRef = doc(db, "users", idRef.current);
+
+          // Récupérer le document utilisateur
+          getDoc(userDocRef)
+            .then((docSnapshot) => {
+              if (docSnapshot.exists()) {
+                // Obtenir le champ 'like' du document
+                const currentLikes = docSnapshot.data().like || [];
+
+                if (!currentLikes.includes(usersId)) {
+                  // Ajouter une nouvelle valeur à 'like'
+                  const updatedLikes = [...currentLikes, usersId];
+
+                  // Mettre à jour le document avec le nouveau tableau 'like'
+                  return updateDoc(userDocRef, {
+                    like: updatedLikes,
+                  });
+                }
+              } else {
+                console.log("Le document utilisateur n'existe pas.");
+              }
+            })
+            .catch((error) => {
+              console.error(
+                "Erreur lors de la mise à jour du document :",
+                error
+              );
+            });
+        }
         likeSent = true;
       } else if (value < -100 && !likeSent) {
-        console.log("nope :", usersId);
         likeSent = true;
       }
     });
