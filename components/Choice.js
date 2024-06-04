@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 
 import {
@@ -22,6 +22,22 @@ const COLORS = {
 
 const Choice = ({ name, type }) => {
   const color = COLORS[type];
+
+
+  // useEffect(() => {
+  //   console.log("Color:", color);
+  //   console.log("Type:", type);
+  //   if (color && type) {
+  //     const match = () => {
+  //       if (type === "like") {
+  //         console.log("YES");
+  //       } else if (type === "nope") {
+  //         console.log("NOPE");
+  //       }
+  //     };
+  //     match();
+  //   }
+  // }, [color, type]);
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({

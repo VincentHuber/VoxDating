@@ -1,10 +1,5 @@
 import {Text, View, SafeAreaView } from 'react-native'
 import React, { useEffect } from 'react'
-import LiveAudioStream, {
-  PowerLevel,
-  NativeRecordReceivePCM,
-  FrequencyHistogramView,
-} from 'react-native-live-audio-fft';
 import {useDispatch} from 'react-redux'
 import {audioPause} from "../../reducers/pause";
 

@@ -197,9 +197,9 @@ const LoginScreen = () => {
                 color: "white",
               }}
             >
-              ÉCOUTE,{"\n"}
-              CRUSH,{"\n"}
-              RENCONTRE.
+              ÉCOUTE{"\n"}
+              CRUSH{"\n"}
+              <Text style={{ color: "#6A29FF" }}>RENCONTRE</Text>
             </Text>
           </View>
 

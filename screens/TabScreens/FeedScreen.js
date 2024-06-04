@@ -83,7 +83,8 @@ const FeedScreen = () => {
 
         if (userWishedGender) {
           // Récupère tous les documents dans la collection "users" de Firestore
-          const allUsers = await getDocs(collection(db, "users"));
+          const allUsers = await getDocs(collection(db, "users"))
+          
           // Initialise un tableau vide pour stocker les utilisateurs filtrés
           const usersData = [];
 
@@ -97,6 +98,7 @@ const FeedScreen = () => {
                   username: user.data().username,
                   gender: user.data().gender,
                   audioProfile: user.data().audioProfile,
+                  usersId:user.id
                 };
                 // Ajoute l'objet utilisateur au tableau usersData
                 usersData.push(userObj);
@@ -239,6 +241,7 @@ useEffect(() => {
             key={currentCandidateIndex}
             username={userFiltered[currentCandidateIndex].username}
             audioProfile={userFiltered[currentCandidateIndex].audioProfile}
+            usersId={userFiltered[currentCandidateIndex].usersId}
             isFirst={true}
             swipe={swipe}
             titlSign={titlSign}

@@ -3,8 +3,9 @@ import React, { useCallback, useEffect, useState, useRef } from "react";
 import Choice from "./Choice";
 import { Audio } from "expo-av";
 import AudioVisualisation from "./AudioVisualisation";
-import {useSelector, useDispatch} from 'react-redux'
+import { useSelector, useDispatch } from "react-redux";
 import { audioPause } from "../reducers/pause";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 import {
@@ -26,29 +27,53 @@ const Candidate = ({
   isFirst,
   swipe,
   titlSign,
+  usersId,
   ...rest
 }) => {
   const soundRef = useRef(null);
+
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
+
   const [play, setPlay] = useState(false);
+
   const [tabPlay, setTabPlay] = useState(true);
 
   const [currentVolume, setCurrentVolume] = useState(0);
 
-  const pause = useSelector((state)=>state.pause.value)
-  console.log('pause :', pause)
+  const pause = useSelector((state) => state.pause.value);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
+  //Valeur de l'id
+  const [id, setId] = useState(null);
 
-  useEffect(()=>{
-    dispatch(audioPause(false))
-  },[audioPause, dispatch])
+  //Récupère l'id dans l'AsyncStorage
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        let userData = await AsyncStorage.getItem("@user");
+        if (userData !== null) {
+          userData = JSON.parse(userData);
+          setId(userData.uid);
+        }
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des données utilisateur :",
+          error
+        );
+      }
+    };
+    fetchToken();
+  }, []);
+
+  // Fonction pour activer l'audio de candidate
+  useEffect(() => {
+    dispatch(audioPause(false));
+  }, [audioPause, dispatch]);
 
   // Fonction pour charger et lire l'audio
   const loadAudio = async () => {
     try {
-
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
         playsInSilentModeIOS: true,
@@ -57,12 +82,11 @@ const Candidate = ({
       const { sound } = await Audio.Sound.createAsync({ uri: audioProfile }); // Charge le son depuis l'URI
       soundRef.current = sound; // Stocke le son dans la référence
       setIsSoundLoaded(true);
-      await sound.playAsync(); 
+      await sound.playAsync();
     } catch (error) {
       console.error("Error loading audio:", error);
     }
   };
-
 
   // useEffect pour charger l'audio à la création du composant
   useEffect(() => {
@@ -70,7 +94,6 @@ const Candidate = ({
 
     return () => {
       if (soundRef.current) {
-        console.log("Stopping and unloading sound...");
         soundRef.current.stopAsync();
         soundRef.current.unloadAsync();
       }
@@ -86,7 +109,6 @@ const Candidate = ({
             allowsRecordingIOS: false,
             playsInSilentModeIOS: true,
           });
-          console.log("Replaying sound...");
           await soundRef.current.replayAsync({ isLooping: true });
         } catch (error) {
           console.error("Error replaying sound:", error);
@@ -106,7 +128,7 @@ const Candidate = ({
     }
   }
 
-//Trouver le volume du son
+  //Trouver le volume du son
   useEffect(() => {
     const monitorVolume = async () => {
       if (soundRef.current) {
@@ -124,7 +146,6 @@ const Candidate = ({
     return () => clearInterval(interval);
   }, [isSoundLoaded]);
 
-
   // Fonction pour mettre en pause ou lire l'audio au clic sur le tab
   async function pauseTabRecording() {
     if (tabPlay) {
@@ -134,13 +155,12 @@ const Candidate = ({
     }
   }
 
-   //Fontion pour mettre en pause au click sur une tab.screen
-    useEffect(() => {
+  //Fontion pour mettre en pause au click sur une tab.screen
+  useEffect(() => {
     const handlePlayPause = async () => {
       if (soundRef.current) {
         if (pause) {
           await soundRef.current.pauseAsync();
-
         } else {
           await soundRef.current.playAsync();
         }
@@ -149,12 +169,30 @@ const Candidate = ({
     handlePlayPause();
   }, [pause]);
 
-
   // Définition de l'animation de rotation
   const rotate = Animated.multiply(swipe.x, titlSign).interpolate({
     inputRange: [-100, 0, 100],
     outputRange: ["8deg", "0deg", "-8deg"],
   });
+
+  //Fonction pour créer une action en fonction de la position de la carte
+  useEffect(() => {
+    let likeSent = false;
+
+    const swipeListener = swipe.x.addListener(({ value }) => {
+      if (value > 100 && !likeSent) {
+        console.log("like :", usersId);
+        likeSent = true;
+      } else if (value < -100 && !likeSent) {
+        console.log("nope :", usersId);
+        likeSent = true;
+      }
+    });
+
+    return () => {
+      swipe.x.removeListener(swipeListener);
+    };
+  }, [swipe.x]);
 
   // La carte suit le mouvement du doigt
   const animatedCandidateStyle = {
@@ -248,7 +286,6 @@ const Candidate = ({
             alignItems: "center",
           }}
         >
-          
           <Text
             style={{
               marginTop: 50,
@@ -263,8 +300,15 @@ const Candidate = ({
             {username}
           </Text>
 
-          <View style={{ position: "absolute", width: "100%", height: "100%", zIndex:-5 }}>
-            <AudioVisualisation currentVolume ={currentVolume}/>
+          <View
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              zIndex: -5,
+            }}
+          >
+            <AudioVisualisation currentVolume={currentVolume} />
           </View>
 
           {isFirst && renderChoice()}
