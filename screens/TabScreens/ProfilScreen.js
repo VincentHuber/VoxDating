@@ -42,6 +42,7 @@ const ProfilScreen = () => {
 
   const windowHeight = useWindowDimensions().height;
 
+  
 
   useEffect(()=>{
     dispatch(audioPause(true))

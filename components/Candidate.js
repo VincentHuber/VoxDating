@@ -31,24 +31,31 @@ const Candidate = ({
   usersId,
   ...rest
 }) => {
+  // Référence pour stocker le son
   const soundRef = useRef(null);
 
+  // Référence pour stocker l'identifiant utilisateur
   const idRef = useRef(null);
 
+  // État pour indiquer si le son est chargé
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
 
+  // État pour gérer la lecture de l'audio
   const [play, setPlay] = useState(false);
 
+  // État pour gérer la lecture de l'audio dans un onglet
   const [tabPlay, setTabPlay] = useState(true);
 
+  // État pour le volume actuel
   const [currentVolume, setCurrentVolume] = useState(0);
 
+  // Sélecteur/Dispatch Redux pour accéder à l'état de pause
   const pause = useSelector((state) => state.pause.value);
-
   const dispatch = useDispatch();
 
   //Valeur de l'id
   const [id, setId] = useState(null);
+
 
   //Récupère l'id dans l'AsyncStorage
   useEffect(() => {
@@ -69,16 +76,20 @@ const Candidate = ({
     fetchToken();
   }, []);
 
+
+  //Fige l'id dans une Ref
   useEffect(() => {
     if (id !== null) {
       idRef.current = id;
     }
   }, [id]);
 
+
   // Fonction pour activer l'audio de candidate
   useEffect(() => {
     dispatch(audioPause(false));
   }, [audioPause, dispatch]);
+
 
   // Fonction pour charger et lire l'audio
   const loadAudio = async () => {
@@ -97,6 +108,7 @@ const Candidate = ({
     }
   };
 
+
   // useEffect pour charger l'audio à la création du composant
   useEffect(() => {
     loadAudio();
@@ -108,6 +120,7 @@ const Candidate = ({
       }
     };
   }, [audioProfile]);
+
 
   // useEffect pour rejouer le son une fois qu'il est chargé
   useEffect(() => {
@@ -127,6 +140,7 @@ const Candidate = ({
     }
   }, [isSoundLoaded]);
 
+
   // Fonction pour mettre en pause ou lire l'audio au clic
   async function pauseRecording() {
     setPlay(!play);
@@ -137,7 +151,8 @@ const Candidate = ({
     }
   }
 
-  //Trouver le volume du son
+
+  //Effet pour surveiller le volume du son
   useEffect(() => {
     const monitorVolume = async () => {
       if (soundRef.current) {
@@ -155,14 +170,6 @@ const Candidate = ({
     return () => clearInterval(interval);
   }, [isSoundLoaded]);
 
-  // Fonction pour mettre en pause ou lire l'audio au clic sur le tab
-  async function pauseTabRecording() {
-    if (tabPlay) {
-      await soundRef.current.pauseAsync();
-    } else {
-      await soundRef.current.replayAsync({ isLooping: true });
-    }
-  }
 
   //Fontion pour mettre en pause au click sur une tab.screen
   useEffect(() => {
@@ -178,34 +185,34 @@ const Candidate = ({
     handlePlayPause();
   }, [pause]);
 
+
   // Définition de l'animation de rotation
   const rotate = Animated.multiply(swipe.x, titlSign).interpolate({
     inputRange: [-100, 0, 100],
     outputRange: ["8deg", "0deg", "-8deg"],
   });
 
-  //Fonction pour créer une action en fonction de la position de la carte
+
+  //Fonction pour créer un ajouter l'id du candidat dans l'user
   useEffect(() => {
     let likeSent = false;
 
     const swipeListener = swipe.x.addListener(({ value }) => {
       if (value > 100 && !likeSent) {
+
         if (idRef.current) {
-          // Récupérer le document utilisateur actuel
+
           const userDocRef = doc(db, "users", idRef.current);
 
-          // Récupérer le document utilisateur
           getDoc(userDocRef)
-            .then((docSnapshot) => {
-              if (docSnapshot.exists()) {
-                // Obtenir le champ 'like' du document
-                const currentLikes = docSnapshot.data().like || [];
+            .then((userDoc) => {
+              if (userDoc.exists()) {
+
+                const currentLikes = userDoc.data().like || [];
 
                 if (!currentLikes.includes(usersId)) {
-                  // Ajouter une nouvelle valeur à 'like'
                   const updatedLikes = [...currentLikes, usersId];
 
-                  // Mettre à jour le document avec le nouveau tableau 'like'
                   return updateDoc(userDocRef, {
                     like: updatedLikes,
                   });
