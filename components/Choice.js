@@ -23,22 +23,6 @@ const COLORS = {
 const Choice = ({ name, type }) => {
   const color = COLORS[type];
 
-
-  // useEffect(() => {
-  //   console.log("Color:", color);
-  //   console.log("Type:", type);
-  //   if (color && type) {
-  //     const match = () => {
-  //       if (type === "like") {
-  //         console.log("YES");
-  //       } else if (type === "nope") {
-  //         console.log("NOPE");
-  //       }
-  //     };
-  //     match();
-  //   }
-  // }, [color, type]);
-
   //Chargement de la police
   const [fontsLoaded] = useFonts({
     Lexend_900Black,
@@ -64,7 +48,17 @@ const Choice = ({ name, type }) => {
         alignItems: "center",
       }}
     >
-      <FontAwesome name={name} size={45} color={color} />
+      {/* {type === "like" ? (
+        <Text style={{ fontFamily: "Lexend_500Medium", fontSize: 60, color }}>
+          LIKE
+        </Text>
+      ) : (
+        <Text style={{ fontFamily: "Lexend_500Medium", fontSize: 60, color }}>
+          NOPE
+        </Text>
+      )} */}
+
+      <FontAwesome name={name} size={47} color={color} />
     </View>
   );
 };

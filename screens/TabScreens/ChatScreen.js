@@ -183,7 +183,7 @@ const ChatScreen = () => {
             <TouchableOpacity
               key={index}
               style={{
-                height: 70,
+                height: 75,
                 borderBottomWidth: 1,
                 flexDirection: "row",
                 alignItems: "center",
@@ -199,8 +199,8 @@ const ChatScreen = () => {
                 <View
                   style={{
                     marginHorizontal: 15,
-                    height: 45,
-                    width: 45,
+                    height: 50,
+                    width: 50,
                     borderRadius: 30,
                     alignItems: "center",
                     justifyContent:"center",
@@ -209,7 +209,7 @@ const ChatScreen = () => {
                 >
                 <MaterialIcons
                 name="multitrack-audio"
-                size={25}
+                size={30}
                 color={"white"}
               />
 
