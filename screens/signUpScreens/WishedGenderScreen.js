@@ -273,7 +273,7 @@ export default function WishedGenderScreen({ navigation }) {
             borderRadius: 14,
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "white",
+            backgroundColor: "#6A29FF",
           }}
         >
           <Image

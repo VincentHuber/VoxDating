@@ -194,7 +194,7 @@ export default function CityScreen({ navigation }) {
             borderRadius: 14,
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "white",
+            backgroundColor: "#6A29FF",
           }}
           activeOpacity={0.2}
         >
