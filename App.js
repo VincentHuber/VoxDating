@@ -24,8 +24,6 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import pause from "./reducers/pause";
 
-import {useDispatch} from 'react-redux'
-import {audioPause} from "./reducers/pause"
 
 const store = configureStore({
   reducer: {pause},
@@ -71,15 +69,7 @@ const MenuBlur = () => {
 
 //Tab Navigation
 const TabNavigator = () => {
-  // const dispatch = useDispatch()
-
-  // const pauseClick = () => {
-  //   return ()=>{
-  //     dispatch(audioPause(true))
-  //   }
-  // }
-
-  
+ 
   return (
     <Tab.Navigator
       safeAreaInsets={{
@@ -142,9 +132,6 @@ const TabNavigator = () => {
       <Tab.Screen
         name="Likes"
         component={LikesScreen}
-        // listeners={{tabPress:(e) => {
-        //   pauseClick();
-        // },}}
         options={{
           tabBarIcon: ({ focused }) => (
             <View

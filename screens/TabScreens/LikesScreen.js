@@ -459,14 +459,15 @@ export default function LikesScreen() {
           borderRadius: 14,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "white",
+          backgroundColor: "#6A29FF",
           zIndex: 3,
         }}
       >
         <Text
           style={{
-            fontFamily: "Lexend_400Regular",
+            fontFamily: "Lexend_600SemiBold",
             fontSize: 18,
+            color:"white"
           }}
         >
           CONTINUER

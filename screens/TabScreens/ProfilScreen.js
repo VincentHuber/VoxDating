@@ -42,7 +42,7 @@ const ProfilScreen = () => {
 
   const windowHeight = useWindowDimensions().height;
 
-  
+
 
   useEffect(()=>{
     dispatch(audioPause(true))
@@ -146,22 +146,38 @@ const ProfilScreen = () => {
         style={{
           flex: 1,
           width: "100%",
-        }}
+          }}
       >
         <Text
           style={{
             fontFamily: "Lexend_900Black",
             fontSize: 34,
+            textAlign:"center",
             color: "white",
             marginTop: 10,
           }}
         >
-          PROFIL
+          CONSULTE TON COMPTE
         </Text>
+
+        <Text
+        style={{
+          width: "80%",
+          marginTop: 20,
+
+          textAlign: "center",
+          fontFamily: "Lexend_400Regular",
+          fontSize: 18,
+          color: "white",
+        }}
+      >
+        Vérifie tes données et assure-toi qu'elles sont à jour.
+      </Text>
+
 
         <View
           style={{
-            marginTop: 40,
+            marginTop: 30,
             height: 277,
             width: "80%",
             backgroundColor: "#292929",
@@ -526,7 +542,7 @@ const ProfilScreen = () => {
 
         <TouchableOpacity
           style={{
-            backgroundColor: "white",
+            backgroundColor: "#6A29FF",
             width: "80%",
             height: 55,
             borderRadius: 10,
@@ -537,8 +553,8 @@ const ProfilScreen = () => {
         >
           <Text
             style={{
-              color: "black",
-              fontFamily: "Lexend_400Regular",
+              color: "white",
+              fontFamily: "Lexend_600SemiBold",
               fontSize: 18,
             }}
           >
