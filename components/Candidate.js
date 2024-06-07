@@ -193,7 +193,7 @@ const Candidate = ({
   });
 
 
-  //Fonction pour créer un ajouter l'id du candidat dans l'user
+  //Fonction pour ajouter l'id du candidat dans l'user
   useEffect(() => {
     let likeSent = false;
 

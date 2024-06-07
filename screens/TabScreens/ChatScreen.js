@@ -1,4 +1,4 @@
-import { Text, View, SafeAreaView } from "react-native";
+import { Text, View, SafeAreaView, ActivityIndicator } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { audioPause } from "../../reducers/pause";
@@ -21,7 +21,7 @@ import {
   Lexend_100Thin,
 } from "@expo-google-fonts/lexend";
 
-const ChatScreen = () => {
+const ChatScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const idRef = useRef(null);
@@ -103,9 +103,10 @@ const ChatScreen = () => {
                 return false;
               }
             })
-            .map((doc) => doc.data());
+            .map((doc) => ({ id: doc.id, ...doc.data() }));
 
           setLikedCandidates(mutualLikes);
+          console.log("mutualLikes :", mutualLikes)
         } else {
           console.log("Le document utilisateur n'existe pas");
         }
@@ -189,6 +190,12 @@ const ChatScreen = () => {
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
+              onPress={() => {
+                navigation.navigate("ChatMatch", {
+                  userId: idRef.current,
+                  candidate:candidate,
+                });
+              }}
             >
               <View
                 style={{
@@ -203,16 +210,15 @@ const ChatScreen = () => {
                     width: 50,
                     borderRadius: 30,
                     alignItems: "center",
-                    justifyContent:"center",
+                    justifyContent: "center",
                     backgroundColor: "black",
                   }}
                 >
-                <MaterialIcons
-                name="multitrack-audio"
-                size={30}
-                color={"white"}
-              />
-
+                  <MaterialIcons
+                    name="multitrack-audio"
+                    size={30}
+                    color={"white"}
+                  />
                 </View>
                 <Text
                   style={{
@@ -232,7 +238,7 @@ const ChatScreen = () => {
                   backgroundColor: "#6A29FF",
                   justifyContent: "center",
                   alignItems: "center",
-                  marginRight:15
+                  marginRight: 15,
                 }}
               >
                 <Text
@@ -248,7 +254,16 @@ const ChatScreen = () => {
             </TouchableOpacity>
           ))
         ) : (
-          <Text style={{ color: "white" }}>Aucun match pour le moment</Text>
+          <View
+            style={{
+              height: 300,
+              width: "100%",
+              justifyContent: "center",
+              backgroundColor: "black",
+            }}
+          >
+            <ActivityIndicator size="large" />
+          </View>
         )}
       </View>
     </SafeAreaView>

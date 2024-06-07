@@ -13,6 +13,7 @@ import FeedScreen from "./screens/TabScreens/FeedScreen";
 import LikesScreen from "./screens/TabScreens/LikesScreen";
 import ChatScreen from "./screens/TabScreens/ChatScreen";
 import ProfilScreen from "./screens/TabScreens/ProfilScreen";
+import ChatMatchScreen from "./screens/ChatMatchScreen";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -305,6 +306,11 @@ export default function App() {
             options={{ headerShown: false }}
             name="TabNavigator"
             component={TabNavigator}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="ChatMatch"
+            component={ChatMatchScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>
