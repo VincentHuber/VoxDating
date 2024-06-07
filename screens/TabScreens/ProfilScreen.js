@@ -154,16 +154,16 @@ const ProfilScreen = () => {
             fontSize: 34,
             textAlign:"center",
             color: "white",
-            marginTop: 10,
+            marginTop: 20,
           }}
         >
-          CONSULTE TON COMPTE
+          CONSULTE {"\n"}TON COMPTE
         </Text>
 
         <Text
         style={{
           width: "80%",
-          marginTop: 20,
+          marginTop: 22,
 
           textAlign: "center",
           fontFamily: "Lexend_400Regular",

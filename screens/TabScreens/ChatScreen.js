@@ -147,7 +147,7 @@ const ChatScreen = ({ navigation }) => {
       <Text
         style={{
           width: "80%",
-          marginTop: 10,
+          marginTop: 20,
 
           textAlign: "center",
           fontFamily: "Lexend_900Black",
@@ -160,7 +160,7 @@ const ChatScreen = ({ navigation }) => {
       <Text
         style={{
           width: "80%",
-          marginTop: 20,
+          marginTop: 22,
 
           textAlign: "center",
           fontFamily: "Lexend_400Regular",

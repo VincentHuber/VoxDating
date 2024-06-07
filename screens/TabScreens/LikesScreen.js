@@ -96,7 +96,7 @@ export default function LikesScreen() {
         <Text
           style={{
             width: "80%",
-            marginTop: 10,
+            marginTop: 20,
 
             textAlign: "center",
             fontFamily: "Lexend_900Black",
@@ -109,7 +109,7 @@ export default function LikesScreen() {
         <Text
           style={{
             width: "80%",
-            marginTop: 20,
+            marginTop: 22,
 
             textAlign: "center",
             fontFamily: "Lexend_400Regular",
