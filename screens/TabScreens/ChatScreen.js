@@ -106,7 +106,6 @@ const ChatScreen = ({ navigation }) => {
             .map((doc) => ({ id: doc.id, ...doc.data() }));
 
           setLikedCandidates(mutualLikes);
-          console.log("mutualLikes :", mutualLikes)
         } else {
           console.log("Le document utilisateur n'existe pas");
         }
