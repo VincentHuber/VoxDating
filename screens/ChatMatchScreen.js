@@ -1,6 +1,21 @@
-import { Image, SafeAreaView, Text, View } from "react-native";
-import React from "react";
+import { FlatList, Image, SafeAreaView, Text, View } from "react-native";
+import React, { useLayoutEffect, useState } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {
+  addDoc,
+  doc,
+  collection,
+  orderBy,
+  query,
+  onSnapshot,
+} from "firebase/firestore";
+import { db } from "../firebase";
+import { storage } from "../firebase";
+
+import { Audio } from "expo-av";
 
 import {
   useFonts,
@@ -19,7 +34,220 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function ChatMatchScreen({ navigation }) {
   const route = useRoute();
+
+  const [recordingInProgress, setRecordingInProgress] = useState();
+  const [recordingDone, setRecordingDone] = useState();
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const [progress, setProgress] = useState();
+
+  const [messages, setMessages] = useState([]);
+
   const { userId, candidate } = route.params;
+
+  //Fonction pour enregistrer l'audio
+  async function startRecording() {
+    try {
+      setRecordingDone(null);
+      const perm = await Audio.requestPermissionsAsync();
+
+      if (perm.status === "granted") {
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
+        });
+
+        const { recording } = await Audio.Recording.createAsync(
+          Audio.RecordingOptionsPresets.HIGH_QUALITY
+        );
+        setRecordingInProgress(recording);
+      }
+    } catch (error) {
+      console.log("Reccording error :", error);
+    }
+  }
+
+  //Fonction pour arrêter l'enregistrement
+  async function stopRecording() {
+    setRecordingInProgress(null);
+
+    try {
+      await recordingInProgress.stopAndUnloadAsync();
+
+      //autorise le son sur le haut-parleur
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+      });
+
+      const { sound, status } =
+        await recordingInProgress.createNewLoadedSoundAsync();
+
+      const uri = recordingInProgress.getURI();
+
+      setRecordingDone({
+        sound: sound,
+        duration: getDurationFormatted(status.durationMillis),
+        file: uri,
+      });
+
+      //Enregistrement du son dans le storage et firebase
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      const storageRef = ref(storage, "audioMessage/" + new Date().getTime());
+
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+
+      // Surveille l'évolution du chargement
+      uploadTask.on(
+        "state_changed",
+        // Callback appelée lorsqu'il y a un changement d'état
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress(progress.toFixed());
+        },
+        (error) => {
+          console.log("error : ", error);
+        },
+        // Callback appelée lorsque le chargement est terminé
+        async () => {
+          const audioURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+          // Met à jour le user dans Firestore avec l'URL du fichier audio
+          if (userId && candidate.id) {
+            await addDoc(collection(db, "messages"), {
+              createdAt: Date.now(),
+              sender: userId,
+              receiver: candidate.id,
+              audioProfile: audioURL,
+              duration: getDurationFormatted(status.durationMillis),
+            });
+          } else {
+            console.log("ID is undefined or null");
+          }
+          setRecordingDone("");
+        }
+      );
+    } catch (error) {
+      console.log("Error stopping recording: ", error);
+    }
+  }
+
+  //Fonction pour formater la durée
+  function getDurationFormatted(milliseconds) {
+    const minutes = milliseconds / 1000 / 60;
+    const seconds = Math.round((minutes - Math.floor(minutes)) * 60);
+    return seconds < 10
+      ? `${Math.floor(minutes)}:0${seconds}`
+      : `${Math.floor(minutes)}:${seconds}`;
+  }
+
+  //Récupère les messages
+  useLayoutEffect(() => {
+    const collectionRef = collection(db, "messages"); // Référence à la collection "chats"
+    const q = query(collectionRef, orderBy("createdAt", "desc")); // Création d'une requête pour trier les messages par date de création
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      // Abonnement aux modifications de la collection de chats
+      console.log("snapshot", snapshot);
+      setMessages(
+        // MAJ des messages avec les données reçues
+        snapshot.docs.map((doc) => ({
+          createdAt: doc.data().createdAt,
+          audioProfile: doc.data().audioProfile,
+          receiver: doc.data().receiver,
+          sender: doc.data().sender,
+          duration: doc.data().duration,
+        }))
+      );
+    });
+    return unsubscribe; // Désabonnement lors du démontage du composant
+  }, []);
+
+  // Fonction pour rendre chaque message
+  const renderMessage = ({ item }) => (
+    <View
+      style={{
+        paddingHorizontal:10,
+        paddingTop:10,
+        alignItems: item.sender === userId ? "flex-end" : "flex-start",
+      }}
+    >
+      <View
+        key={item.id}
+        style={{
+          marginBottom: 2,
+          paddingLeft: 12,
+          paddingRight: 12,
+          height: 50,
+          width: 215,
+          borderRadius: 50,
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexDirection: "row",
+          backgroundColor: item.sender === userId ? "#6A29FF" : "black",
+        }}
+      >
+        <TouchableOpacity
+          style={{
+            height: 30,
+            aspectRatio: 1,
+            backgroundColor: "white",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 40,
+            paddingLeft: 3,
+          }}
+        >
+         
+          <FontAwesome5
+            name="play"
+            size={14}
+            color={item.sender === userId ? "#6A29FF" : "black"}
+          />
+        </TouchableOpacity>
+        
+        <Image
+            source={require("../assets/freq.png")}
+            style={{
+              width: 74,
+              height: 25,
+            }}
+          />
+
+        {/* <Text style={{ color: "white", fontFamily: "Lexend_400Regular" }}>
+        De: {item.sender} à {item.receiver}
+      </Text> */}
+        {/* <Text style={{ color: "white", fontFamily: "Lexend_400Regular" }}>
+        Envoyé à: {new Date(item.createdAt).toLocaleString()}
+      </Text> */}
+        <View
+          style={{
+            height: 30,
+            width: 65,
+            borderRadius: 30,
+            backgroundColor: item.sender === userId ? "#4B1DB4" : "#292929",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              color: "white",
+              fontFamily: "Lexend_300Light",
+              fontSize: 16,
+            }}
+          >
+            +{item.duration}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+
+  const listFooterComponent = () => <View style={{ height: 100 }} />;
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({
@@ -110,28 +338,12 @@ export default function ChatMatchScreen({ navigation }) {
           backgroundColor: "#292929",
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            height:50
-          }}
-        >
-          <View style={{ height: 0.5, width: "17%", backgroundColor: "white"}} />
-          <Text
-            style={{
-              color: "white",
-              textAlign: "center",
-              fontFamily: "Lexend_300Light",
-              fontSize: 13,
-              marginHorizontal:13,
-            }}
-          >
-            Aujourd'hui
-          </Text>
-          <View style={{ height: 0.5, width: "17%", backgroundColor: "white" }} />
-        </View>
+        <FlatList
+          data={messages}
+          renderItem={renderMessage}
+          keyExtractor={(item) => item.id}
+          ListFooterComponent={listFooterComponent}
+        />
       </View>
       <View
         style={{
@@ -141,8 +353,10 @@ export default function ChatMatchScreen({ navigation }) {
         }}
       >
         <TouchableOpacity
+          onPress={recordingInProgress ? stopRecording : startRecording}
+          activeOpacity={1}
           style={{
-            backgroundColor: "white",
+            backgroundColor: recordingInProgress ? "#6A29FF" : "white",
             height: 110,
             width: 110,
             borderRadius: 55,
@@ -150,7 +364,11 @@ export default function ChatMatchScreen({ navigation }) {
             alignItems: "center",
           }}
         >
-          <MaterialCommunityIcons name="microphone" size={60} color="black" />
+          {recordingInProgress ? (
+            <FontAwesome5 name="stop" size={30} color="white" />
+          ) : (
+            <MaterialCommunityIcons name="microphone" size={60} color="black" />
+          )}
         </TouchableOpacity>
       </View>
       {/* <Text style={{ color: "white" }}>{userId}</Text>
