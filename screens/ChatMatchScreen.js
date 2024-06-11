@@ -4,7 +4,11 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { Circle, Svg } from "react-native-svg";
 
-import Animated, {useSharedValue, useAnimatedStyle, withTiming} from "react-native-reanimated";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import {
@@ -48,21 +52,23 @@ export default function ChatMatchScreen({ navigation }) {
 
   const [messagesFiltered, setMessagesFiltered] = useState([]);
 
+  const [currentPlayingMessageId, setCurrentPlayingMessageId] = useState(null);
+
   const { userId, candidate } = route.params;
 
-  const animation = useSharedValue(1)
+  const animation = useSharedValue(1);
 
-  const animationStyle = useAnimatedStyle(()=>{
+  const animationStyle = useAnimatedStyle(() => {
     return {
-    transform:[
-      {
-        scale: withTiming(animation.value,{
-          duration:1000
-        }, 
-      )
-      }
-    ]}
-  })
+      transform: [
+        {
+          scale: withTiming(animation.value, {
+            duration: 1000,
+          }),
+        },
+      ],
+    };
+  });
 
   //Fonction pour enregistrer l'audio
   async function startRecording() {
@@ -80,8 +86,7 @@ export default function ChatMatchScreen({ navigation }) {
           Audio.RecordingOptionsPresets.HIGH_QUALITY
         );
         setRecordingInProgress(recording);
-        animation.value=25
-
+        animation.value = 25;
       }
     } catch (error) {
       console.log("Reccording error :", error);
@@ -91,7 +96,7 @@ export default function ChatMatchScreen({ navigation }) {
   //Fonction pour arrêter l'enregistrement
   async function stopRecording() {
     setRecordingInProgress(null);
-    animation.value=0.8
+    animation.value = 0.8;
     try {
       await recordingInProgress.stopAndUnloadAsync();
 
@@ -166,7 +171,7 @@ export default function ChatMatchScreen({ navigation }) {
   }
 
   //Fonction pour jouer l'audio
-  async function playRecording(audioURL) {
+  async function playRecording(audioURL, messageId) {
     try {
       const { sound } = await Audio.Sound.createAsync(
         { uri: audioURL },
@@ -174,9 +179,11 @@ export default function ChatMatchScreen({ navigation }) {
       );
 
       setIsPlaying(true);
+      setCurrentPlayingMessageId(messageId); // Mettre à jour l'ID du message en cours de lecture
       sound.setOnPlaybackStatusUpdate((status) => {
         if (status.didJustFinish) {
           setIsPlaying(false);
+          setCurrentPlayingMessageId(null);
         }
       });
       await sound.playAsync();
@@ -184,12 +191,6 @@ export default function ChatMatchScreen({ navigation }) {
       console.log("Error playing audio: ", error);
     }
   }
-
-  // // Fonction pour mettre en pause
-  // async function pauseRecording() {
-  //   setIsPlaying(false);
-  //   await recordingDone.sound.pauseAsync();
-  //}
 
   //Récupère les messages
   useLayoutEffect(() => {
@@ -229,7 +230,7 @@ export default function ChatMatchScreen({ navigation }) {
     <View
       style={{
         paddingHorizontal: 10,
-        marginVertical: item.sender === userId ? 2 : 8,
+        marginVertical: 2,
         alignItems: item.sender === userId ? "flex-end" : "flex-start",
       }}
     >
@@ -241,6 +242,8 @@ export default function ChatMatchScreen({ navigation }) {
           paddingRight: 12,
           height: 50,
           width: 215,
+          borderColor: "#F9F9F9",
+          borderWidth: currentPlayingMessageId === item.id ? 0.8 : 0,
           borderRadius: 50,
           alignItems: "center",
           justifyContent: "space-between",
@@ -250,22 +253,23 @@ export default function ChatMatchScreen({ navigation }) {
       >
         <TouchableOpacity
           onPress={() => {
-            playRecording(item.audioProfile);
+            playRecording(item.audioProfile, item.id);
           }}
           disabled={isPlaying}
+          activeOpacity={1}
           style={{
             height: 30,
             aspectRatio: 1,
-            backgroundColor: isPlaying ? "gray" : "white", // Changez la couleur de fond selon l'état de lecture
+            backgroundColor: "white",
             justifyContent: "center",
             alignItems: "center",
             borderRadius: 40,
-            paddingLeft: 3,
-            opacity: isPlaying ? 0.5 : 1, // Réduire l'opacité lorsque le bouton est désactivé
+            paddingLeft: currentPlayingMessageId === item.id ? 1 : 3,
+            opacity: isPlaying && currentPlayingMessageId === item.id ? 0.5 : 1,
           }}
         >
           <FontAwesome5
-            name="play"
+            name={currentPlayingMessageId === item.id ? "pause" : "play"}
             size={14}
             color={item.sender === userId ? "#6A29FF" : "black"}
           />
@@ -334,7 +338,7 @@ export default function ChatMatchScreen({ navigation }) {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          zIndex:-3
+          zIndex: -3,
         }}
       >
         <TouchableOpacity
@@ -364,7 +368,7 @@ export default function ChatMatchScreen({ navigation }) {
             fontFamily: "Lexend_900Black",
             fontSize: 34,
             textTransform: "uppercase",
-            zIndex:-3
+            zIndex: -3,
           }}
         >
           {candidate.username}
@@ -381,7 +385,7 @@ export default function ChatMatchScreen({ navigation }) {
           fontFamily: "Lexend_400Regular",
           fontSize: 18,
           color: "white",
-          zIndex:-3
+          zIndex: -3,
         }}
       >
         Une fois que le micro est activé, ton message sera envoyé sans
@@ -396,7 +400,7 @@ export default function ChatMatchScreen({ navigation }) {
           height: "60%",
           borderRadius: 15,
           backgroundColor: "#292929",
-          zIndex:-3
+          zIndex: -3,
         }}
       >
         <FlatList
@@ -434,21 +438,21 @@ export default function ChatMatchScreen({ navigation }) {
         </TouchableOpacity>
       </View>
       <Animated.View
-        style={[{
-          position: "absolute",
-          width: 110,
-          height: 110,
-          bottom:20,
-          borderRadius:100,
-          zIndex:-1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor:"black",
-          opacity:0.8
-        },
-          animationStyle
-        
-      ]}
+        style={[
+          {
+            position: "absolute",
+            width: 110,
+            height: 110,
+            bottom: 20,
+            borderRadius: 100,
+            zIndex: -1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "black",
+            opacity: 0.8,
+          },
+          animationStyle,
+        ]}
       />
     </SafeAreaView>
   );

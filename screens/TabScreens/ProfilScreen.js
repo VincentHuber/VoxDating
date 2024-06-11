@@ -14,8 +14,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase";
-import {useDispatch} from 'react-redux'
-import {audioPause} from "../../reducers/pause";
+import { useDispatch } from "react-redux";
+import { audioPause } from "../../reducers/pause";
 
 import {
   useFonts,
@@ -36,17 +36,15 @@ const ProfilScreen = () => {
 
   const [user, setUser] = useState(null);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const navigation = useNavigation();
 
   const windowHeight = useWindowDimensions().height;
 
-
-
-  useEffect(()=>{
-    dispatch(audioPause(true))
-  },[])
+  useEffect(() => {
+    dispatch(audioPause(true));
+  }, []);
 
   //Récupère l'id dans l'AsyncStorage
   useEffect(() => {
@@ -103,9 +101,9 @@ const ProfilScreen = () => {
     auth
       .signOut()
       .then(() => {
-        setUser(null)
-        setId(null)
-        AsyncStorage.clear()
+        setUser(null);
+        setId(null);
+        AsyncStorage.clear();
         navigation.replace("Login");
       })
       .catch((error) => alert(error.message));
@@ -146,13 +144,13 @@ const ProfilScreen = () => {
         style={{
           flex: 1,
           width: "100%",
-          }}
+        }}
       >
         <Text
           style={{
             fontFamily: "Lexend_900Black",
             fontSize: 34,
-            textAlign:"center",
+            textAlign: "center",
             color: "white",
             marginTop: 20,
           }}
@@ -161,19 +159,18 @@ const ProfilScreen = () => {
         </Text>
 
         <Text
-        style={{
-          width: "80%",
-          marginTop: 22,
+          style={{
+            width: "80%",
+            marginTop: 22,
 
-          textAlign: "center",
-          fontFamily: "Lexend_400Regular",
-          fontSize: 18,
-          color: "white",
-        }}
-      >
-        Vérifie tes données et assure-toi qu'elles sont à jour.
-      </Text>
-
+            textAlign: "center",
+            fontFamily: "Lexend_400Regular",
+            fontSize: 18,
+            color: "white",
+          }}
+        >
+          Vérifie tes données et assure-toi qu'elles sont à jour.
+        </Text>
 
         <View
           style={{
@@ -524,7 +521,12 @@ const ProfilScreen = () => {
                   Mot de passe
                 </Text>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={{color: "white",
+                      fontFamily: "Lexend_600SemiBold",
+                      fontSize: 16,
+                      marginRight: 5
 
+                  }}>******</Text>
                   <MaterialIcons
                     name="navigate-next"
                     size={26}
