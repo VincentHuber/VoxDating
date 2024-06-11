@@ -43,6 +43,8 @@ export default function ChatMatchScreen({ navigation }) {
 
   const [messages, setMessages] = useState([]);
 
+  const [messagesFiltered, setMessagesFiltered] = useState([]);
+
   const { userId, candidate } = route.params;
 
   //Fonction pour enregistrer l'audio
@@ -144,15 +146,40 @@ export default function ChatMatchScreen({ navigation }) {
       : `${Math.floor(minutes)}:${seconds}`;
   }
 
+  //Fonction pour jouer l'audio
+  async function playRecording(audioURL) {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: audioURL },
+        { shouldPlay: true }
+      );
+
+      setIsPlaying(true);
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {
+          setIsPlaying(false);
+        }
+      });
+      await sound.playAsync();
+    } catch (error) {
+      console.log("Error playing audio: ", error);
+    }
+  }
+
+  // // Fonction pour mettre en pause
+  // async function pauseRecording() {
+  //   setIsPlaying(false);
+  //   await recordingDone.sound.pauseAsync();
+  //}
+
   //Récupère les messages
   useLayoutEffect(() => {
     const collectionRef = collection(db, "messages"); // Référence à la collection "chats"
-    const q = query(collectionRef, orderBy("createdAt", "desc")); // Création d'une requête pour trier les messages par date de création
+    const q = query(collectionRef, orderBy("createdAt", "asc")); // Création d'une requête pour trier les messages par date de création
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       // Abonnement aux modifications de la collection de chats
-      console.log("snapshot", snapshot);
-      setMessages(
+      const messagesData =
         // MAJ des messages avec les données reçues
         snapshot.docs.map((doc) => ({
           createdAt: doc.data().createdAt,
@@ -160,8 +187,20 @@ export default function ChatMatchScreen({ navigation }) {
           receiver: doc.data().receiver,
           sender: doc.data().sender,
           duration: doc.data().duration,
-        }))
-      );
+          id: doc.id
+        }));
+
+      Promise.all(messagesData).then((eachMessage) => {
+        setMessages(eachMessage);
+
+       const filteredMessages = eachMessage.filter((message)=>{
+        return(
+          ((message.sender === candidate.id && message.receiver === userId) ||
+          (message.sender === userId && message.receiver === candidate.id))
+        )
+       })
+       setMessagesFiltered(filteredMessages)
+      });
     });
     return unsubscribe; // Désabonnement lors du démontage du composant
   }, []);
@@ -170,8 +209,8 @@ export default function ChatMatchScreen({ navigation }) {
   const renderMessage = ({ item }) => (
     <View
       style={{
-        paddingHorizontal:10,
-        paddingTop:10,
+        paddingHorizontal: 10,
+        marginVertical: item.sender === userId ? 2 : 8,
         alignItems: item.sender === userId ? "flex-end" : "flex-start",
       }}
     >
@@ -191,38 +230,36 @@ export default function ChatMatchScreen({ navigation }) {
         }}
       >
         <TouchableOpacity
+          onPress={() => {
+            playRecording(item.audioProfile);
+          }}
+          disabled={isPlaying}
           style={{
             height: 30,
             aspectRatio: 1,
-            backgroundColor: "white",
+            backgroundColor: isPlaying ? "gray" : "white", // Changez la couleur de fond selon l'état de lecture
             justifyContent: "center",
             alignItems: "center",
             borderRadius: 40,
             paddingLeft: 3,
+            opacity: isPlaying ? 0.5 : 1, // Réduire l'opacité lorsque le bouton est désactivé
           }}
         >
-         
           <FontAwesome5
             name="play"
             size={14}
             color={item.sender === userId ? "#6A29FF" : "black"}
           />
         </TouchableOpacity>
-        
-        <Image
-            source={require("../assets/freq.png")}
-            style={{
-              width: 74,
-              height: 25,
-            }}
-          />
 
-        {/* <Text style={{ color: "white", fontFamily: "Lexend_400Regular" }}>
-        De: {item.sender} à {item.receiver}
-      </Text> */}
-        {/* <Text style={{ color: "white", fontFamily: "Lexend_400Regular" }}>
-        Envoyé à: {new Date(item.createdAt).toLocaleString()}
-      </Text> */}
+        <Image
+          source={require("../assets/freq.png")}
+          style={{
+            width: 74,
+            height: 25,
+          }}
+        />
+
         <View
           style={{
             height: 30,
@@ -339,10 +376,11 @@ export default function ChatMatchScreen({ navigation }) {
         }}
       >
         <FlatList
-          data={messages}
+          data={messagesFiltered}
           renderItem={renderMessage}
           keyExtractor={(item) => item.id}
           ListFooterComponent={listFooterComponent}
+          style={{ paddingTop: 5 }}
         />
       </View>
       <View
@@ -371,8 +409,7 @@ export default function ChatMatchScreen({ navigation }) {
           )}
         </TouchableOpacity>
       </View>
-      {/* <Text style={{ color: "white" }}>{userId}</Text>
-      <Text style={{ color: "white" }}>{candidate.id}</Text> */}
+
     </SafeAreaView>
   );
 }
