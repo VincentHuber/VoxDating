@@ -2,6 +2,9 @@ import { FlatList, Image, SafeAreaView, Text, View } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { Circle, Svg } from "react-native-svg";
+
+import Animated, {useSharedValue, useAnimatedStyle, withTiming} from "react-native-reanimated";
 
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import {
@@ -47,6 +50,20 @@ export default function ChatMatchScreen({ navigation }) {
 
   const { userId, candidate } = route.params;
 
+  const animation = useSharedValue(1)
+
+  const animationStyle = useAnimatedStyle(()=>{
+    return {
+    transform:[
+      {
+        scale: withTiming(animation.value,{
+          duration:1000
+        }, 
+      )
+      }
+    ]}
+  })
+
   //Fonction pour enregistrer l'audio
   async function startRecording() {
     try {
@@ -63,6 +80,8 @@ export default function ChatMatchScreen({ navigation }) {
           Audio.RecordingOptionsPresets.HIGH_QUALITY
         );
         setRecordingInProgress(recording);
+        animation.value=25
+
       }
     } catch (error) {
       console.log("Reccording error :", error);
@@ -72,7 +91,7 @@ export default function ChatMatchScreen({ navigation }) {
   //Fonction pour arrêter l'enregistrement
   async function stopRecording() {
     setRecordingInProgress(null);
-
+    animation.value=0.8
     try {
       await recordingInProgress.stopAndUnloadAsync();
 
@@ -187,19 +206,19 @@ export default function ChatMatchScreen({ navigation }) {
           receiver: doc.data().receiver,
           sender: doc.data().sender,
           duration: doc.data().duration,
-          id: doc.id
+          id: doc.id,
         }));
 
       Promise.all(messagesData).then((eachMessage) => {
         setMessages(eachMessage);
 
-       const filteredMessages = eachMessage.filter((message)=>{
-        return(
-          ((message.sender === candidate.id && message.receiver === userId) ||
-          (message.sender === userId && message.receiver === candidate.id))
-        )
-       })
-       setMessagesFiltered(filteredMessages)
+        const filteredMessages = eachMessage.filter((message) => {
+          return (
+            (message.sender === candidate.id && message.receiver === userId) ||
+            (message.sender === userId && message.receiver === candidate.id)
+          );
+        });
+        setMessagesFiltered(filteredMessages);
       });
     });
     return unsubscribe; // Désabonnement lors du démontage du composant
@@ -315,6 +334,7 @@ export default function ChatMatchScreen({ navigation }) {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
+          zIndex:-3
         }}
       >
         <TouchableOpacity
@@ -344,6 +364,7 @@ export default function ChatMatchScreen({ navigation }) {
             fontFamily: "Lexend_900Black",
             fontSize: 34,
             textTransform: "uppercase",
+            zIndex:-3
           }}
         >
           {candidate.username}
@@ -360,6 +381,7 @@ export default function ChatMatchScreen({ navigation }) {
           fontFamily: "Lexend_400Regular",
           fontSize: 18,
           color: "white",
+          zIndex:-3
         }}
       >
         Une fois que le micro est activé, ton message sera envoyé sans
@@ -369,10 +391,12 @@ export default function ChatMatchScreen({ navigation }) {
       <View
         style={{
           marginTop: 30,
+          paddingTop: 5,
           width: "90%",
           height: "60%",
           borderRadius: 15,
           backgroundColor: "#292929",
+          zIndex:-3
         }}
       >
         <FlatList
@@ -409,7 +433,23 @@ export default function ChatMatchScreen({ navigation }) {
           )}
         </TouchableOpacity>
       </View>
-
+      <Animated.View
+        style={[{
+          position: "absolute",
+          width: 110,
+          height: 110,
+          bottom:20,
+          borderRadius:100,
+          zIndex:-1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor:"black",
+          opacity:0.8
+        },
+          animationStyle
+        
+      ]}
+      />
     </SafeAreaView>
   );
 }
