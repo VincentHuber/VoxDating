@@ -7,7 +7,7 @@ import { Canvas } from '@react-three/fiber';
 
 export default function AudioVisualisation({ currentVolume }) {
 
-  const { distort } = useSpringThree({ distort: currentVolume === 1 ? 0.9 : 0.4 });
+  const { distort } = useSpringThree({ distort: currentVolume === 1 ? 0.9 : 0.3 });
 
   const AnimatedMeshDistortMaterial = animatedThree(MeshDistortMaterial);
   

@@ -2,7 +2,6 @@ import { FlatList, Image, SafeAreaView, Text, View } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import { Circle, Svg } from "react-native-svg";
 
 import Animated, {
   useSharedValue,

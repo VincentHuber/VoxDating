@@ -20,6 +20,12 @@ import { storage } from "../../firebase";
 
 import { Audio } from "expo-av";
 
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
+
 import {
   useFonts,
   Lexend_900Black,
@@ -33,9 +39,7 @@ import {
   Lexend_100Thin,
 } from "@expo-google-fonts/lexend";
 
-
 export default function AudioScreen({ navigation }) {
-
   //Etats des pour l'audio
   const [recordingInProgress, setRecordingInProgress] = useState();
   const [recordingDone, setRecordingDone] = useState();
@@ -46,6 +50,19 @@ export default function AudioScreen({ navigation }) {
   //Valeur de l'id
   const [id, setId] = useState(null);
 
+  const animation = useSharedValue(1);
+
+  const animationStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: withTiming(animation.value, {
+            duration: 1000,
+          }),
+        },
+      ],
+    };
+  });
 
   //Récupère l'id dans l'AsyncStorage
   useEffect(() => {
@@ -66,7 +83,6 @@ export default function AudioScreen({ navigation }) {
     fetchToken();
   }, []);
 
-
   //Fonction pour enregistrer l'audio
   async function startRecording() {
     try {
@@ -78,11 +94,12 @@ export default function AudioScreen({ navigation }) {
           allowsRecordingIOS: true,
           playsInSilentModeIOS: true,
         });
-
+        animation.value = 20;
         const { recording } = await Audio.Recording.createAsync(
-          Audio.RecordingOptionsPresets.HIGH_QUALITY,
+          Audio.RecordingOptionsPresets.HIGH_QUALITY
         );
         setRecordingInProgress(recording);
+        
       }
     } catch (error) {
       console.log("Reccording error :", error);
@@ -91,32 +108,33 @@ export default function AudioScreen({ navigation }) {
 
   //Fonction pour arrêter l'enregistrement
   async function stopRecording() {
-    setRecordingInProgress(null);
-
+    animation.value = 0.8;
+    
     await recordingInProgress.stopAndUnloadAsync();
-
+    
     //autorise le son sur le haut-parleur
     await Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
       playsInSilentModeIOS: true,
-    });
-    const { sound, status } =
+      });
+      const { sound, status } =
       await recordingInProgress.createNewLoadedSoundAsync();
-
-    setRecordingDone({
-      sound: sound,
-      duration: getDurationFormatted(status.durationMillis),
-      file: recordingInProgress.getURI(),
-    });
-
-    //Joue l'audio après l'avoir enregistré
-    setIsPlaying(true);
-    sound.setOnPlaybackStatusUpdate((status) => {
-      if (status.didJustFinish) {
-        setIsPlaying(false);
-      }
-    });
-    await sound.replayAsync();
+      
+      setRecordingDone({
+        sound: sound,
+        duration: getDurationFormatted(status.durationMillis),
+        file: recordingInProgress.getURI(),
+        });
+        
+        //Joue l'audio après l'avoir enregistré
+        setIsPlaying(true);
+        sound.setOnPlaybackStatusUpdate((status) => {
+          if (status.didJustFinish) {
+            setIsPlaying(false);
+            }
+            });
+            await sound.replayAsync();
+            setRecordingInProgress(null);
   }
 
   //Fonction pour jouer l'audio
@@ -148,7 +166,6 @@ export default function AudioScreen({ navigation }) {
 
   //Fonction pour enregistrer l'audio dans Firestore
   async function audioFirestoreUpdate(uri, fileType) {
-
     const response = await fetch(uri);
     const blob = await response.blob();
 
@@ -178,7 +195,7 @@ export default function AudioScreen({ navigation }) {
             await updateDoc(doc(db, "users", id), {
               audioProfile: audioURL,
             });
-            navigation.navigate("TabNavigator")
+            navigation.navigate("TabNavigator");
           } else {
             console.log("ID is undefined or null");
           }
@@ -186,7 +203,6 @@ export default function AudioScreen({ navigation }) {
       }
     );
   }
-  
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({
@@ -251,6 +267,7 @@ export default function AudioScreen({ navigation }) {
       </View>
 
       <TouchableOpacity
+        activeOpacity={1}
         onPress={recordingInProgress ? stopRecording : startRecording}
         style={{
           width: "47%",
@@ -261,14 +278,32 @@ export default function AudioScreen({ navigation }) {
           borderWidth: 1,
           borderColor: "white",
           backgroundColor: "black",
+          zIndex: 7,
         }}
       >
         {recordingInProgress ? (
-          <FontAwesome5 name="stop" size={40} color="white" />
+          <FontAwesome5 name="stop" size={45} color="white" />
         ) : (
           <MaterialCommunityIcons name="microphone" size={70} color="white" />
         )}
       </TouchableOpacity>
+
+      <Animated.View
+        style={[
+          {
+            position: "absolute",
+            width: 160,
+            height: 160,
+            bottom:"30.5%",
+
+            borderRadius: 100,
+            zIndex: 5,
+            backgroundColor: "black",
+            opacity: 0.8,
+          },
+          animationStyle,
+        ]}
+      />
 
       <View
         style={{
@@ -298,6 +333,7 @@ export default function AudioScreen({ navigation }) {
             />
           </TouchableOpacity>
         </View>
+
         <View
           style={{
             flexDirection: "row",
@@ -354,4 +390,3 @@ export default function AudioScreen({ navigation }) {
     </SafeAreaView>
   );
 }
-
