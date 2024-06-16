@@ -30,21 +30,39 @@ import {
   Lexend_100Thin,
 } from "@expo-google-fonts/lexend";
 
+
 const ProfilScreen = () => {
+
   //Valeur de l'id
   const [id, setId] = useState(null);
-
   const [user, setUser] = useState(null);
 
+  //Communique avec le store
   const dispatch = useDispatch();
 
+  // Initialisation du hook useNavigation
   const navigation = useNavigation();
 
+  //Calcul la taille de la police par rapport à sa View parente
   const windowHeight = useWindowDimensions().height;
 
+  const smallScreen = 700;
+  let paddingBottomFactor;
+
+  if (windowHeight < smallScreen) {
+    paddingBottomFactor = 0.22;
+  } else {
+    paddingBottomFactor = 0.13;
+  }
+
+  const paddingBottom = windowHeight * paddingBottomFactor;
+
+
+  //Met le son en pause
   useEffect(() => {
     dispatch(audioPause(true));
   }, []);
+
 
   //Récupère l'id dans l'AsyncStorage
   useEffect(() => {
@@ -65,6 +83,7 @@ const ProfilScreen = () => {
     fetchToken();
   }, []);
 
+
   //Fonction pour récupérer les infos de l'user
   useEffect(() => {
     const fetchUser = async () => {
@@ -84,18 +103,7 @@ const ProfilScreen = () => {
     fetchUser();
   }, [id]);
 
-  //Calcul de la hauteur de la fenêtre
-  const smallScreen = 700;
-  let paddingBottomFactor;
-
-  if (windowHeight < smallScreen) {
-    paddingBottomFactor = 0.22;
-  } else {
-    paddingBottomFactor = 0.13;
-  }
-
-  const paddingBottom = windowHeight * paddingBottomFactor;
-
+  
   // Fonction pour se déconnecter
   const handleSignOut = () => {
     auth
@@ -108,6 +116,7 @@ const ProfilScreen = () => {
       })
       .catch((error) => alert(error.message));
   };
+
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({
@@ -126,6 +135,7 @@ const ProfilScreen = () => {
   if (!fontsLoaded) {
     return null;
   }
+
 
   return (
     <SafeAreaView
@@ -521,12 +531,16 @@ const ProfilScreen = () => {
                   Mot de passe
                 </Text>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={{color: "white",
+                  <Text
+                    style={{
+                      color: "white",
                       fontFamily: "Lexend_600SemiBold",
                       fontSize: 16,
-                      marginRight: 5
-
-                  }}>******</Text>
+                      marginRight: 5,
+                    }}
+                  >
+                    ******
+                  </Text>
                   <MaterialIcons
                     name="navigate-next"
                     size={26}

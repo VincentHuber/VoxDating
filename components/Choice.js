@@ -1,5 +1,5 @@
-import { View, Text } from "react-native";
-import React, { useEffect } from "react";
+import { View } from "react-native";
+import React from "react";
 import { FontAwesome } from "@expo/vector-icons";
 
 import {
@@ -21,6 +21,7 @@ const COLORS = {
 };
 
 const Choice = ({ name, type }) => {
+  
   const color = COLORS[type];
 
   //Chargement de la police
@@ -48,16 +49,6 @@ const Choice = ({ name, type }) => {
         alignItems: "center",
       }}
     >
-      {/* {type === "like" ? (
-        <Text style={{ fontFamily: "Lexend_500Medium", fontSize: 60, color }}>
-          LIKE
-        </Text>
-      ) : (
-        <Text style={{ fontFamily: "Lexend_500Medium", fontSize: 60, color }}>
-          NOPE
-        </Text>
-      )} */}
-
       <FontAwesome name={name} size={47} color={color} />
     </View>
   );

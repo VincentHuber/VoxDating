@@ -45,12 +45,15 @@ const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // État pour gérer le mode inscription ou connexion
   const [stateSignup, setStateSignup] = useState("");
+
 
   //Initialisation de la BottomSheet
   const sheetRef = useRef(null);
   const [isOpen, setIsOpen] = useState(-1);
   const snapPoints = [275];
+
 
   //Fonction pour activer la BottomSheet Signup
   const handleBottomSheetSignup = useCallback((index) => {
@@ -59,12 +62,14 @@ const LoginScreen = () => {
     setStateSignup(true);
   }, []);
 
+
   //Fonction pour activer la BottomSheet Signin
   const handleBottomSheetSignin = useCallback((index) => {
     sheetRef.current?.snapToIndex(index);
     setIsOpen(0);
     setStateSignup(false);
   }, []);
+
 
   // Initialisation de useNavigation
   const navigation = useNavigation();
@@ -104,7 +109,7 @@ const LoginScreen = () => {
         },
         { merge: true }
       );
-      navigation.navigate("Username")
+      navigation.navigate("Username");
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -112,20 +117,26 @@ const LoginScreen = () => {
     }
   };
 
+
   //Fonction pour se connecter
   const handleLogin = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
 
       // Stockage des informations user dans AsyncStorage
       await AsyncStorage.setItem("@user", JSON.stringify(user));
-      
+
       navigation.navigate("TabNavigator");
     } catch (error) {
       Alert.alert("Erreur lors de la connexion", error.message);
     }
   };
+
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({
@@ -145,6 +156,7 @@ const LoginScreen = () => {
     return null;
   }
 
+  
   return (
     <SafeAreaView
       style={{
@@ -281,7 +293,7 @@ const LoginScreen = () => {
               </Text>
               <TextInput
                 placeholder="Email"
-                autoCapitalize='none'
+                autoCapitalize="none"
                 placeholderTextColor={"#808080"}
                 value={email}
                 onChangeText={(text) => setEmail(text)}
@@ -359,4 +371,3 @@ const LoginScreen = () => {
 };
 
 export default LoginScreen;
-

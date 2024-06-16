@@ -22,14 +22,19 @@ import {
 } from "@expo-google-fonts/lexend";
 
 const ChatScreen = ({ navigation }) => {
+
+  //Permet de stocker dans le store
   const dispatch = useDispatch();
 
+  //Stockage de l'id
   const idRef = useRef(null);
 
+  //Tableau avec tous les users likés
   const [likedCandidates, setLikedCandidates] = useState([]);
 
   //Valeur de l'id
   const [id, setId] = useState(null);
+
 
   //Récupère l'id dans l'AsyncStorage
   useEffect(() => {
@@ -50,16 +55,20 @@ const ChatScreen = ({ navigation }) => {
     fetchToken();
   }, []);
 
+
+  // Effet pour mettre à jour idRef.current lorsque id change
   useEffect(() => {
     if (id !== null) {
       idRef.current = id;
     }
   }, [id]);
 
+
   // Fonction pour désactiver l'audio de candidate
   useEffect(() => {
     dispatch(audioPause(true));
   }, []);
+
 
   // Effet pour retrouver les id des likes du user
   useEffect(() => {
@@ -117,6 +126,7 @@ const ChatScreen = ({ navigation }) => {
     fetchUserData();
   }, [id]);
 
+
   //Chargement de la police
   const [fontsLoaded] = useFonts({
     Lexend_900Black,
@@ -134,6 +144,7 @@ const ChatScreen = ({ navigation }) => {
   if (!fontsLoaded) {
     return null;
   }
+
 
   return (
     <SafeAreaView
@@ -192,7 +203,7 @@ const ChatScreen = ({ navigation }) => {
               onPress={() => {
                 navigation.navigate("ChatMatch", {
                   userId: idRef.current,
-                  candidate:candidate,
+                  candidate: candidate,
                 });
               }}
             >

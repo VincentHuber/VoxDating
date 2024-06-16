@@ -27,11 +27,13 @@ import {
 } from "@expo-google-fonts/lexend";
 
 export default function AgeScreen({ navigation }) {
+
   //Valeur de l'id
   const [id, setId] = useState(null);
 
   //Valeur de l'input DOB
   const [age, setAge] = useState("");
+
 
   //Récupère l'id dans l'AsyncStorage
   useEffect(() => {
@@ -51,6 +53,7 @@ export default function AgeScreen({ navigation }) {
     };
     fetchToken();
   }, []);
+
 
   //MAJ du DOB + navigation
   const ageClick = async () => {
@@ -76,6 +79,7 @@ export default function AgeScreen({ navigation }) {
     }
   };
 
+
   //Chargement de la police
   const [fontsLoaded] = useFonts({
     Lexend_900Black,
@@ -94,6 +98,7 @@ export default function AgeScreen({ navigation }) {
     return null;
   }
 
+  
   return (
     <SafeAreaView
       style={{

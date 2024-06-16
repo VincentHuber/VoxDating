@@ -39,24 +39,40 @@ import { useRoute } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function ChatMatchScreen({ navigation }) {
+
+  // Récupération des paramètres de la route actuelle
   const route = useRoute();
-
-  const [recordingInProgress, setRecordingInProgress] = useState();
-  const [recordingDone, setRecordingDone] = useState();
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const [progress, setProgress] = useState();
-
-  const [messages, setMessages] = useState([]);
-
-  const [messagesFiltered, setMessagesFiltered] = useState([]);
-
-  const [currentPlayingMessageId, setCurrentPlayingMessageId] = useState(null);
-
+  
+  // Récupération des paramètres de l'utilisateur et du candidat
   const { userId, candidate } = route.params;
 
+  // État pour suivre l'état de l'enregistrement en cours
+  const [recordingInProgress, setRecordingInProgress] = useState();
+
+  // État pour suivre l'état de l'enregistrement terminé
+  const [recordingDone, setRecordingDone] = useState();
+
+  // État pour savoir si un audio est en cours de lecture
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // État pour suivre la progression du chargement de l'audio
+  const [progress, setProgress] = useState();
+
+  // État pour stocker les messages
+  const [messages, setMessages] = useState([]);
+
+ // État pour stocker les messages filtrés
+  const [messagesFiltered, setMessagesFiltered] = useState([]);
+
+  // État pour suivre l'ID du message audio actuellement en cours de lecture
+  const [currentPlayingMessageId, setCurrentPlayingMessageId] = useState(null);
+
+
+  // Définition de la valeur de l'animation
   const animation = useSharedValue(1);
 
+
+  //Fonction pour décrire l'animation
   const animationStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -68,6 +84,7 @@ export default function ChatMatchScreen({ navigation }) {
       ],
     };
   });
+
 
   //Fonction pour enregistrer l'audio
   async function startRecording() {
@@ -91,6 +108,7 @@ export default function ChatMatchScreen({ navigation }) {
       console.log("Reccording error :", error);
     }
   }
+
 
   //Fonction pour arrêter l'enregistrement
   async function stopRecording() {
@@ -160,6 +178,7 @@ export default function ChatMatchScreen({ navigation }) {
     }
   }
 
+
   //Fonction pour formater la durée
   function getDurationFormatted(milliseconds) {
     const minutes = milliseconds / 1000 / 60;
@@ -168,6 +187,7 @@ export default function ChatMatchScreen({ navigation }) {
       ? `${Math.floor(minutes)}:0${seconds}`
       : `${Math.floor(minutes)}:${seconds}`;
   }
+
 
   //Fonction pour jouer l'audio
   async function playRecording(audioURL, messageId) {
@@ -178,7 +198,7 @@ export default function ChatMatchScreen({ navigation }) {
       );
 
       setIsPlaying(true);
-      setCurrentPlayingMessageId(messageId); // Mettre à jour l'ID du message en cours de lecture
+      setCurrentPlayingMessageId(messageId); 
       sound.setOnPlaybackStatusUpdate((status) => {
         if (status.didJustFinish) {
           setIsPlaying(false);
@@ -190,6 +210,7 @@ export default function ChatMatchScreen({ navigation }) {
       console.log("Error playing audio: ", error);
     }
   }
+
 
   //Récupère les messages
   useLayoutEffect(() => {
@@ -223,6 +244,7 @@ export default function ChatMatchScreen({ navigation }) {
     });
     return unsubscribe; // Désabonnement lors du démontage du composant
   }, []);
+
 
   // Fonction pour rendre chaque message
   const renderMessage = ({ item }) => (
@@ -306,7 +328,10 @@ export default function ChatMatchScreen({ navigation }) {
     </View>
   );
 
+
+  //Fonction pour ajouter de l'espace en dessous des messages
   const listFooterComponent = () => <View style={{ height: 100 }} />;
+
 
   //Chargement de la police
   const [fontsLoaded] = useFonts({
@@ -325,6 +350,7 @@ export default function ChatMatchScreen({ navigation }) {
   if (!fontsLoaded) {
     return null;
   }
+
 
   return (
     <SafeAreaView

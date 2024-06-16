@@ -6,8 +6,7 @@ import {
   ScrollView,
   useWindowDimensions,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { BlurView } from "expo-blur";
+import React, { useEffect } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {useDispatch} from 'react-redux'
 import {audioPause} from "../../reducers/pause";
@@ -30,8 +29,10 @@ import { Entypo } from "@expo/vector-icons";
 
 export default function LikesScreen() {
 
+  //Communique avec le store
   const dispatch = useDispatch()
 
+  //Calcul la taille de la police par rapport à sa View parente
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = useWindowDimensions().height;
 
@@ -50,10 +51,10 @@ export default function LikesScreen() {
   const paddingBottom = windowHeight * paddingBottomFactor;
 
 
+  //Met le son en pause 
   useEffect(()=>{
     dispatch(audioPause(true))
   },[])
-
 
 
   //Chargement de la police
@@ -74,6 +75,7 @@ export default function LikesScreen() {
     return null;
   }
 
+  
   return (
     <SafeAreaView
       style={{

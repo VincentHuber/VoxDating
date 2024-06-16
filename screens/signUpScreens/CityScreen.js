@@ -33,7 +33,6 @@ import {
 
 export default function CityScreen({ navigation }) {
   
-  
   //Valeur de l'id
   const [id, setId] = useState(null);
 

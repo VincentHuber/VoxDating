@@ -4,7 +4,7 @@ import { FontAwesome } from "@expo/vector-icons";
 
 const Button = ({ name, size, style, onPress }) => {
 
-  // Crée une référence mutable pour une valeur animée initialisée à 1
+  // Crée une réf pour la valeur animée
   const scale = useRef(new Animated.Value(1)).current;
 
   const animateScale = useCallback( 

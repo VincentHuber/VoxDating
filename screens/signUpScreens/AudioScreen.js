@@ -40,18 +40,27 @@ import {
 } from "@expo-google-fonts/lexend";
 
 export default function AudioScreen({ navigation }) {
-  //Etats des pour l'audio
+
+  // État pour suivre l'état de l'enregistrement en cours
   const [recordingInProgress, setRecordingInProgress] = useState();
+
+  // État pour suivre l'état de l'enregistrement terminé
   const [recordingDone, setRecordingDone] = useState();
+
+  // État pour savoir si un audio est en cours de lecture
   const [isPlaying, setIsPlaying] = useState(false);
 
+  // État pour suivre la progression du chargement de l'audio
   const [progress, setProgress] = useState();
 
   //Valeur de l'id
   const [id, setId] = useState(null);
 
+  // Définition de la valeur de l'animation
   const animation = useSharedValue(1);
 
+
+  //Fonction pour décrire l'animation
   const animationStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -63,6 +72,7 @@ export default function AudioScreen({ navigation }) {
       ],
     };
   });
+
 
   //Récupère l'id dans l'AsyncStorage
   useEffect(() => {
@@ -82,6 +92,7 @@ export default function AudioScreen({ navigation }) {
     };
     fetchToken();
   }, []);
+
 
   //Fonction pour enregistrer l'audio
   async function startRecording() {
@@ -105,6 +116,7 @@ export default function AudioScreen({ navigation }) {
       console.log("Reccording error :", error);
     }
   }
+
 
   //Fonction pour arrêter l'enregistrement
   async function stopRecording() {
@@ -149,11 +161,13 @@ export default function AudioScreen({ navigation }) {
     await sound.replayAsync();
   }
 
+
   // Fonction pour mettre en pause
   async function pauseRecording() {
     setIsPlaying(false);
     await recordingDone.sound.pauseAsync();
   }
+
 
   //Fonction pour formater la durée
   function getDurationFormatted(milliseconds) {
@@ -163,6 +177,7 @@ export default function AudioScreen({ navigation }) {
       ? `${Math.floor(minutes)}:0${seconds}`
       : `${Math.floor(minutes)}:${seconds}`;
   }
+
 
   //Fonction pour enregistrer l'audio dans Firestore
   async function audioFirestoreUpdate(uri, fileType) {
@@ -204,6 +219,7 @@ export default function AudioScreen({ navigation }) {
     );
   }
 
+
   //Chargement de la police
   const [fontsLoaded] = useFonts({
     Lexend_900Black,
@@ -216,6 +232,7 @@ export default function AudioScreen({ navigation }) {
     Lexend_200ExtraLight,
     Lexend_100Thin,
   });
+
 
   //Attente de le chargement de la police
   if (!fontsLoaded) {
