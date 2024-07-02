@@ -223,7 +223,7 @@ export default function GenderScreen({ navigation }) {
           paddingLeft: 17,
           paddingRight: 17,
           marginTop: 8,
-          justifyContent: "#6A29FF",
+          justifyContent: "center",
         }}
       >
         <Text

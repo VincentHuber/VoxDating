@@ -249,7 +249,7 @@ const LoginScreen = () => {
               borderRadius: 13,
               alignItems: "center",
               marginTop: 5,
-              marginBottom: 10,
+              marginBottom: 32,
             }}
           >
             <Text
